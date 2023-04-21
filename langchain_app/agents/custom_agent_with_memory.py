@@ -1,20 +1,27 @@
 from langchain.agents import Tool, AgentExecutor, ZeroShotAgent
 from langchain import LLMChain
 from langchain.tools.python.tool import PythonAstREPLTool
+from langchain.tools.multi_line_human.tool import MultiLineHumanInputRun
 
 from langchain_app.models.vicuna_request_llm import VicunaLLM
 from langchain.memory import ConversationBufferMemory
 
-from langchain_app.prompts.self_healing_code_prompt import template_suffix
+from langchain_app.prompts.human_in_the_loop import template_suffix
 memory = ConversationBufferMemory(memory_key="chat_history")
 python_tool = PythonAstREPLTool()
+multi_line = MultiLineHumanInputRun()
 llm = VicunaLLM()
 
 tools = [
     Tool(
         name = "Python REPL",
         func=python_tool,
-        description="useful for when you need to answer questions about current events"
+        description="useful for when you need to execute Python code"
+    ),
+    Tool(
+        name="MultiLineHuman",
+        func=multi_line,
+        description="useful for when you need to ask for help from a Human"
     )
 ]
 
