@@ -5,9 +5,9 @@ try:
     from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaTokenizer, LlamaForCausalLM, AutoModel, LlamaForCausalLM
 except ImportError:
     from transformers import AutoTokenizer, AutoModelForCausalLM, LLaMATokenizer, LLamaForCausalLM, AutoModel
+from peft import PeftModel
 
-
-def load_model(model_path, device="cuda", debug=False):
+def load_model(model_path, device="cuda", debug=False, use_fine_tuned_lora=True, lora_weights=""):
     if device == "cpu":
         kwargs = {}
     elif device == "cuda":
@@ -15,9 +15,19 @@ def load_model(model_path, device="cuda", debug=False):
         kwargs["device_map"] = "auto"
 
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
-    model = AutoModelForCausalLM.from_pretrained(model_path,
-        low_cpu_mem_usage=True, **kwargs)
 
+
+    model = AutoModelForCausalLM.from_pretrained(model_path,
+        low_cpu_mem_usage=True, load_in_8bit=True, **kwargs)
+
+    if use_fine_tuned_lora:
+        if not lora_weights:
+            raise ValueError("Provide path to lora weights or set 'use_fine_tuned_lora' to False")
+        model = PeftModel.from_pretrained(
+            model,
+            lora_weights,
+            torch_dtype=torch.float16,
+        )
     if device == "cuda":
         model.to(device)
 
@@ -27,7 +37,7 @@ def load_model(model_path, device="cuda", debug=False):
     return model, tokenizer
 
 device = "cuda"
-model, tokenizer = load_model("../learn-vicuna/vicuna-7b/", device)
+model, tokenizer = load_model("../learn-vicuna/vicuna-7b/", device, lora_weights="../vicuna-react-lora/vicuna-react")
 
 @torch.inference_mode()
 def compute_until_stop(model, tokenizer, params, device,

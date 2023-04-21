@@ -39,7 +39,7 @@ else:
     print("Nay")  # this line has four spaces at the beginning
 
 Observation: OK
-Thought: I now know the answer
+Thought: I have executed the task successfully.
 Final Answer: I have executed the task successfully.
 
 Example 3:
