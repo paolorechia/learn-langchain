@@ -2,6 +2,16 @@
 
 AI Agent with Vicuna
 
+## Update 21.04
+This repository has been reorganized.
+
+## To run server, execute:
+`uvicorn servers.vicuna_server:app`
+
+## Agent example:
+
+`python -m langchain_app.agents.test_finetune`
+
 ## Medium Article
 https://medium.com/@paolorechia/creating-my-first-ai-agent-with-vicuna-and-langchain-376ed77160e3
 

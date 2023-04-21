@@ -1,6 +1,36 @@
-template = """
+from langchain.agents import load_tools
+from langchain.agents import initialize_agent, Tool
+from langchain.agents import AgentType
+from langchain.utilities import SerpAPIWrapper
 
-Example 1:
+from langchain_app.models.vicuna_request_llm import VicunaLLM
+
+# First, let's load the language model we're going to use to control the agent.
+llm = VicunaLLM()
+
+params = {
+    "engine": "google",
+    "gl": "us",
+    "hl": "en",
+}
+search = SerpAPIWrapper(params=params)
+# Next, let's load some tools to use. Note that the `llm-math` tool uses an LLM, so we need to pass that in.
+tools = load_tools(['python_repl'], llm=llm)
+
+tools.append(Tool(
+    name="Search",
+    func=search.run,
+    description="useful for when you need to ask with search"
+))
+
+# Finally, let's initialize an agent with the tools, the language model, and the type of agent we want to use.
+agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+
+# Now let's test it out!
+agent.run("""
+
+For instance:
+
 Question: Find out how much 2 plus 2 is.
 Thought: I must use the Python shell to calculate 2 + 2
 Action: Python REPL
@@ -13,32 +43,32 @@ Final Answer: 4
 
 
 Example 2:
-Question: Write and execute a script that sleeps for 2 seconds and prints 'Hello, World'
-Thought: I should import the sleep function.
-Action: Python REPL
+
+Question: Find the complex solutions of the equation 5x^2 - 3x + 5 = 0
+Thought: I must use the Wolfram API to find the complex solutions of the equation 5x^2 - 3x + 5 = 0
+Action: Wolfram Alpha
 Action Input: 
-from time import sleep  # line 1
-Observation: 
+5x^2 - 3x + 5 = 0
+Observation: Solution 1: x = 3/10 - (i sqrt(91))/10
+Solution 2: x = 3/10 - (i sqrt(91))/10
 
-Thought: I should call the sleep function passing 2 as parameter
-Action: Python REPL
-Action Input: 
-sleep(2)   # line 1
-Observation: 
+Thought: I now know the answer
+Final Answer: Solutions are x_{1,2} = 3/10 ± (i sqrt(91))/10
 
-Thought: I should use the 'print' function to print 'Hello, World'
-Action: Python REPL
-Action Input: 
-print('Hello, World')  # line 1
-Observation: 
+Example 3:
 
-Thought: I now finished the script
-Final Answer: I executed the following script successfully:
+Question: Find a funny dog joke on Google
+Thought: I must use the Google Serper to find dog jokes
+Action: Search
+Action Input:
+dog jokes
+Observation: What kind of dog is always up for taking a bath? A shampoo-dle.
+Which kind of dog lives in Dracula’s castle? A bloodhound.
 
-from time import sleep  # line 1
-sleep(2)  # line 2
-print('Hello, World')  # line 3
 
+Thought: I should pick the best joke
+Final Answer: What did the cowboy say when his dog ran away? “Well, doggone!”
+Do you want to hear more jokes?
 
 
 Example 4:
@@ -109,14 +139,13 @@ An error be thrown because of the indentation, something like...  "expected an i
 
 To fix, make sure to indent the lines!
 
-4. Do not use \ in variable names, otherwise you'll see the syntax error "unexpected character after line continuation character..."
-5. If the variable is not defined, use vars() to see the defined variables.
-6. Do not repeat the same statement twice without a new reason
-7. The ONLY tools available to use are: ['Python REPL', 'Search']
-8. NEVER use the function input() in Python
+5. Do not use \ in variable names, otherwise you'll see the syntax error "unexpected character after line continuation character..."
+6. If the variable is not defined, use vars() to see the defined variables.
+7. Do not repeat the same statement twice without a new reason
+8. The ONLY tools available to use are: ['Python REPL', 'Wolfram Alpha', 'Search']
 
 
 Now begin for real!
 
-Question: {}.
-"""
+Question: Think of cat jokes and save them to a csv file called 'catjokes.csv'. INDENT the code appropriately.
+""")
