@@ -38,6 +38,7 @@ def load_model(model_path, device="cuda", debug=False, use_fine_tuned_lora=True,
 
 device = "cuda"
 model, tokenizer = load_model("../learn-vicuna/vicuna-7b/", device, lora_weights="../vicuna-react-lora/vicuna-react")
+code_corrector_model, tokenizer = load_model("../learn-vicuna/vicuna-7b/", device, lora_weights="../vicuna-react-lora/code-corrector")
 
 @torch.inference_mode()
 def compute_until_stop(model, tokenizer, params, device,
@@ -58,6 +59,7 @@ def compute_until_stop(model, tokenizer, params, device,
     else:
         raise TypeError("Stop parameter must be string or list of strings.")
 
+    pos = -1
     input_ids = tokenizer(prompt).input_ids
     output_ids = []
 
@@ -122,7 +124,6 @@ def compute_until_stop(model, tokenizer, params, device,
 
 from fastapi import FastAPI
 from pydantic import BaseModel
-from pprint import pprint
 
 app = FastAPI()
 class PromptRequest(BaseModel):
@@ -132,6 +133,22 @@ class PromptRequest(BaseModel):
     stop: Optional[List[str]] = None
 
 @app.post("/prompt")
+def process_prompt(prompt_request: PromptRequest):
+    params = {
+        "prompt": prompt_request.prompt,
+        "temperature": prompt_request.temperature,
+        "max_new_tokens": prompt_request.max_new_tokens,
+        "stop": prompt_request.stop
+    }
+    print("Received prompt: ", params["prompt"])
+    # request with params...")
+    # pprint(params)
+    output = compute_until_stop(model, tokenizer, params, device)
+    print("Output: ", output)
+    return {"response": output}
+
+
+@app.post("/code-fix")
 def process_prompt(prompt_request: PromptRequest):
     params = {
         "prompt": prompt_request.prompt,
