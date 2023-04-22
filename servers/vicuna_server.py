@@ -5,9 +5,9 @@ try:
     from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaTokenizer, LlamaForCausalLM, AutoModel, LlamaForCausalLM
 except ImportError:
     from transformers import AutoTokenizer, AutoModelForCausalLM, LLaMATokenizer, LLamaForCausalLM, AutoModel
+from peft import PeftModel
 
-
-def load_model(model_path, device="cuda", debug=False):
+def load_model(model_path, device="cuda", debug=False, use_fine_tuned_lora=False, lora_weights=""):
     if device == "cpu":
         kwargs = {}
     elif device == "cuda":
@@ -15,19 +15,33 @@ def load_model(model_path, device="cuda", debug=False):
         kwargs["device_map"] = "auto"
 
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
-    model = AutoModelForCausalLM.from_pretrained(model_path,
-        low_cpu_mem_usage=True, **kwargs)
 
+    
+    model = AutoModelForCausalLM.from_pretrained(model_path,
+        low_cpu_mem_usage=True, load_in_8bit=use_fine_tuned_lora, **kwargs)
+    
+    if use_fine_tuned_lora:
+        if not lora_weights:
+            raise ValueError("Provide path to lora weights or set 'use_fine_tuned_lora' to False")
+        model = PeftModel.from_pretrained(
+            model,
+            lora_weights,
+            torch_dtype=torch.float16,
+        )
     if device == "cuda":
         model.to(device)
 
     if debug:
         print(model)
-
-    return model, tokenizer
+    return model, tokenizer, None
 
 device = "cuda"
-model, tokenizer = load_model("../learn-vicuna/vicuna-7b/", device)
+model, tokenizer, seq = load_model(
+    "../learn-vicuna/vicuna-7b/", 
+    device,
+    # use_fine_tuned_lora=True,
+    lora_weights="../vicuna-react-lora/vicuna-react"
+)
 
 @torch.inference_mode()
 def compute_until_stop(model, tokenizer, params, device,
@@ -48,6 +62,7 @@ def compute_until_stop(model, tokenizer, params, device,
     else:
         raise TypeError("Stop parameter must be string or list of strings.")
 
+    pos = -1
     input_ids = tokenizer(prompt).input_ids
     output_ids = []
 
@@ -110,9 +125,17 @@ def compute_until_stop(model, tokenizer, params, device,
     return output
 
 
+
+@torch.inference_mode()
+def get_embeddings(model, tokenizer, prompt, device):
+    input_ids = tokenizer(prompt).input_ids
+    input_embeddings = model.get_input_embeddings()
+    result = input_embeddings(torch.LongTensor([input_ids[-1]]))
+    return (float(x) for x in result.cpu().detach()[0])
+        
+
 from fastapi import FastAPI
 from pydantic import BaseModel
-from pprint import pprint
 
 app = FastAPI()
 class PromptRequest(BaseModel):
@@ -120,6 +143,11 @@ class PromptRequest(BaseModel):
     temperature: float
     max_new_tokens: int
     stop: Optional[List[str]] = None
+
+
+class EmbeddingRequest(BaseModel):
+    prompt: str
+
 
 @app.post("/prompt")
 def process_prompt(prompt_request: PromptRequest):
@@ -134,4 +162,30 @@ def process_prompt(prompt_request: PromptRequest):
     # pprint(params)
     output = compute_until_stop(model, tokenizer, params, device)
     print("Output: ", output)
+    return {"response": output}
+
+
+@app.post("/code-fix")
+def code_fix(prompt_request: PromptRequest):
+    params = {
+        "prompt": prompt_request.prompt,
+        "temperature": prompt_request.temperature,
+        "max_new_tokens": prompt_request.max_new_tokens,
+        "stop": prompt_request.stop
+    }
+    print("Received prompt: ", params["prompt"])
+    # request with params...")
+    # pprint(params)
+    output = compute_until_stop(model, tokenizer, params, device)
+    print("Output: ", output)
+    return {"response": output}
+
+
+@app.post("/embedding")
+def get_embeddings(prompt_request: EmbeddingRequest):
+    params = {
+        "prompt": prompt_request.prompt
+    }
+    print("Received prompt: ", params["prompt"])
+    output = get_embeddings(model, tokenizer,  params["prompt"], device)
     return {"response": output}

@@ -2,7 +2,7 @@ from langchain.agents import load_tools
 from langchain.agents import initialize_agent
 from langchain.agents import AgentType
 # from alpaca_request_llm import AlpacaLLM
-from vicuna_request_llm import VicunaLLM
+from langchain_app.models.vicuna_request_llm import VicunaLLM
 
 # First, let's load the language model we're going to use to control the agent.
 llm = VicunaLLM()
@@ -39,7 +39,7 @@ else:
     print("Nay")  # this line has four spaces at the beginning
 
 Observation: OK
-Thought: I now know the answer
+Thought: I have executed the task successfully.
 Final Answer: I have executed the task successfully.
 
 Example 3:
