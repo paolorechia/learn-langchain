@@ -16,10 +16,12 @@ def load_model(model_path, device="cuda", debug=False, use_fine_tuned_lora=True,
 
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
 
-
+    # seq_model = LlamaForSequenceClassification.from_pretrained(model_path,
+    #     low_cpu_mem_usage=True)
+    
     model = AutoModelForCausalLM.from_pretrained(model_path,
         low_cpu_mem_usage=True, load_in_8bit=True, **kwargs)
-
+    
     if use_fine_tuned_lora:
         if not lora_weights:
             raise ValueError("Provide path to lora weights or set 'use_fine_tuned_lora' to False")
@@ -33,12 +35,13 @@ def load_model(model_path, device="cuda", debug=False, use_fine_tuned_lora=True,
 
     if debug:
         print(model)
-
-    return model, tokenizer
+    # seq_model.to(device)
+    # return None, tokenizer, seq_model
+    return model, tokenizer, None
 
 device = "cuda"
-model, tokenizer = load_model("../learn-vicuna/vicuna-7b/", device, lora_weights="../vicuna-react-lora/vicuna-react")
-code_corrector_model, tokenizer = load_model("../learn-vicuna/vicuna-7b/", device, lora_weights="../vicuna-react-lora/code-corrector")
+model, tokenizer, seq = load_model("../learn-vicuna/vicuna-7b/", device, lora_weights="../vicuna-react-lora/vicuna-react")
+# code_corrector_model, tokenizer = load_model("../learn-vicuna/vicuna-7b/", device, lora_weights="../vicuna-react-lora/code-corrector")
 
 @torch.inference_mode()
 def compute_until_stop(model, tokenizer, params, device,
@@ -122,6 +125,15 @@ def compute_until_stop(model, tokenizer, params, device,
     return output
 
 
+
+@torch.inference_mode()
+def get_embeddings(model, tokenizer, prompt, device):
+    input_ids = tokenizer(prompt).input_ids
+    input_embeddings = model.get_input_embeddings()
+    result = input_embeddings(torch.LongTensor([input_ids[-1]]))
+    return (float(x) for x in result.cpu().detach()[0])
+        
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 
@@ -131,6 +143,11 @@ class PromptRequest(BaseModel):
     temperature: float
     max_new_tokens: int
     stop: Optional[List[str]] = None
+
+
+class EmbeddingRequest(BaseModel):
+    prompt: str
+
 
 @app.post("/prompt")
 def process_prompt(prompt_request: PromptRequest):
@@ -149,7 +166,7 @@ def process_prompt(prompt_request: PromptRequest):
 
 
 @app.post("/code-fix")
-def process_prompt(prompt_request: PromptRequest):
+def code_fix(prompt_request: PromptRequest):
     params = {
         "prompt": prompt_request.prompt,
         "temperature": prompt_request.temperature,
@@ -161,4 +178,14 @@ def process_prompt(prompt_request: PromptRequest):
     # pprint(params)
     output = compute_until_stop(model, tokenizer, params, device)
     print("Output: ", output)
+    return {"response": output}
+
+
+@app.post("/embedding")
+def get_embeddings(prompt_request: EmbeddingRequest):
+    params = {
+        "prompt": prompt_request.prompt
+    }
+    print("Received prompt: ", params["prompt"])
+    output = get_embeddings(model, tokenizer,  params["prompt"], device)
     return {"response": output}
