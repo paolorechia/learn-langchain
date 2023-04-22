@@ -18,7 +18,7 @@ def load_model(model_path, device="cuda", debug=False, use_fine_tuned_lora=False
 
     
     model = AutoModelForCausalLM.from_pretrained(model_path,
-        low_cpu_mem_usage=True, load_in_8bit=True, **kwargs)
+        low_cpu_mem_usage=True, load_in_8bit=use_fine_tuned_lora, **kwargs)
     
     if use_fine_tuned_lora:
         if not lora_weights:
