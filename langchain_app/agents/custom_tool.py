@@ -2,6 +2,25 @@ from langchain.agents import Tool, AgentExecutor, ZeroShotAgent
 from langchain import LLMChain
 from langchain.tools.python.tool import PythonAstREPLTool
 from langchain.tools.multi_line_human.tool import MultiLineHumanInputRun
+from langchain.tools import BaseTool
+from pydantic import BaseModel, Field
+import requests
+
+class CodeOracleInput(BaseModel):
+    input_code: str = Field()
+
+def call_code_endpoint(oracle_input: CodeOracleInput):
+    response = requests.post("http://127.0.0.1:8000/code-fix", json={
+        "prompt": f"""### Instruction: F
+### Input:
+{oracle_input.input_code}
+### Response:
+""",
+        "temperature": 0,
+        "max_new_tokens": 32,
+    })
+    response.raise_for_status()
+    return response.json()["response"]
 
 from langchain_app.models.vicuna_request_llm import VicunaLLM
 from langchain.memory import ConversationBufferMemory
@@ -19,9 +38,10 @@ tools = [
         description="useful for when you need to execute Python code"
     ),
     Tool(
-        name="MultiLineHuman",
-        func=multi_line,
-        description="useful for when you need to ask for help from a Human"
+        name="Calculator",
+        func=call_code_endpoint,
+        description="useful for when you need to answer questions about math",
+        args_schema=CodeOracleInput
     )
 ]
 
