@@ -8,6 +8,8 @@ This repository has been reorganized.
 ## To run server, execute:
 `uvicorn servers.vicuna_server:app`
 
+Access http://localhost:8000/docs for documentation on API
+
 ## Agent example:
 
 `python -m langchain_app.agents.test_finetune`

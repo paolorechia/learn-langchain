@@ -7,7 +7,7 @@ except ImportError:
     from transformers import AutoTokenizer, AutoModelForCausalLM, LLaMATokenizer, LLamaForCausalLM, AutoModel
 from peft import PeftModel
 
-def load_model(model_path, device="cuda", debug=False, use_fine_tuned_lora=True, lora_weights=""):
+def load_model(model_path, device="cuda", debug=False, use_fine_tuned_lora=False, lora_weights=""):
     if device == "cpu":
         kwargs = {}
     elif device == "cuda":
@@ -16,8 +16,6 @@ def load_model(model_path, device="cuda", debug=False, use_fine_tuned_lora=True,
 
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
 
-    # seq_model = LlamaForSequenceClassification.from_pretrained(model_path,
-    #     low_cpu_mem_usage=True)
     
     model = AutoModelForCausalLM.from_pretrained(model_path,
         low_cpu_mem_usage=True, load_in_8bit=True, **kwargs)
@@ -35,13 +33,15 @@ def load_model(model_path, device="cuda", debug=False, use_fine_tuned_lora=True,
 
     if debug:
         print(model)
-    # seq_model.to(device)
-    # return None, tokenizer, seq_model
     return model, tokenizer, None
 
 device = "cuda"
-model, tokenizer, seq = load_model("../learn-vicuna/vicuna-7b/", device, lora_weights="../vicuna-react-lora/vicuna-react")
-# code_corrector_model, tokenizer = load_model("../learn-vicuna/vicuna-7b/", device, lora_weights="../vicuna-react-lora/code-corrector")
+model, tokenizer, seq = load_model(
+    "../learn-vicuna/vicuna-7b/", 
+    device,
+    # use_fine_tuned_lora=True,
+    lora_weights="../vicuna-react-lora/vicuna-react"
+)
 
 @torch.inference_mode()
 def compute_until_stop(model, tokenizer, params, device,
