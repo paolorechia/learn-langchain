@@ -127,7 +127,7 @@ def compute_until_stop(model, tokenizer, params, device,
 
 
 @torch.inference_mode()
-def get_embeddings(model, tokenizer, prompt, device):
+def get_embeddings(model, tokenizer, prompt):
     input_ids = tokenizer(prompt).input_ids
     input_embeddings = model.get_input_embeddings()
     result = input_embeddings(torch.LongTensor([input_ids[-1]]))
@@ -182,10 +182,10 @@ def code_fix(prompt_request: PromptRequest):
 
 
 @app.post("/embedding")
-def get_embeddings(prompt_request: EmbeddingRequest):
+def embeddings(prompt_request: EmbeddingRequest):
     params = {
         "prompt": prompt_request.prompt
     }
     print("Received prompt: ", params["prompt"])
-    output = get_embeddings(model, tokenizer,  params["prompt"], device)
+    output = get_embeddings(model, tokenizer,  params["prompt"])
     return {"response": output}
