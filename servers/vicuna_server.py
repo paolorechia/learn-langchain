@@ -130,8 +130,9 @@ def compute_until_stop(model, tokenizer, params, device,
 def get_embeddings(model, tokenizer, prompt):
     input_ids = tokenizer(prompt).input_ids
     input_embeddings = model.get_input_embeddings()
-    result = input_embeddings(torch.LongTensor([input_ids[-1]]))
-    return (float(x) for x in result.cpu().detach()[0])
+    embeddings = input_embeddings(torch.LongTensor([input_ids]))
+    mean = torch.mean(embeddings[0], 0).cpu().detach()
+    return mean
         
 
 from fastapi import FastAPI
@@ -188,4 +189,4 @@ def embeddings(prompt_request: EmbeddingRequest):
     }
     print("Received prompt: ", params["prompt"])
     output = get_embeddings(model, tokenizer,  params["prompt"])
-    return {"response": output}
+    return {"response": [float(x) for x in output]}
