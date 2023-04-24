@@ -39,7 +39,7 @@ device = "cuda"
 
 if load_for_4bit:
     model_path = "vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g"
-    checkpoint = "vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g.no-act-order.pt"
+    checkpoint = "vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g.safetensors"
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
     from gptq_for_llama.llama_inference import load_quant
     model = load_quant(model_path, checkpoint, 4, 128)

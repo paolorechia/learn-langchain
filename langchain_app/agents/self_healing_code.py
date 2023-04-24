@@ -1,7 +1,7 @@
 from langchain.agents import load_tools
 from langchain.agents import initialize_agent
 from langchain.agents import AgentType
-from prompts.self_healing_code_prompt import template
+from langchain_app.prompts.self_healing_code_prompt import template
 # from alpaca_request_llm import AlpacaLLM
 from langchain_app.models.vicuna_request_llm import VicunaLLM
 
