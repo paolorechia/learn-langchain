@@ -14,7 +14,6 @@ def load_model(model_path, device="cuda", debug=False, use_fine_tuned_lora=False
         kwargs = {"torch_dtype": torch.float16}
         kwargs["device_map"] = "auto"
 
-    tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
 
     
     model = AutoModelForCausalLM.from_pretrained(model_path,
@@ -33,15 +32,25 @@ def load_model(model_path, device="cuda", debug=False, use_fine_tuned_lora=False
 
     if debug:
         print(model)
-    return model, tokenizer, None
+    return model, tokenizer
 
+load_for_4bit = True
 device = "cuda"
-model, tokenizer, seq = load_model(
-    "../learn-vicuna/vicuna-7b/", 
-    device,
-    # use_fine_tuned_lora=True,
-    lora_weights="../vicuna-react-lora/vicuna-react"
-)
+
+if load_for_4bit:
+    model_path = "vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g"
+    checkpoint = "vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g.no-act-order.pt"
+    tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
+    from gptq_for_llama.llama_inference import load_quant
+    model = load_quant(model_path, checkpoint, 4, 128)
+    model.to(device)
+else:
+    model, tokenizer = load_model(
+        "../learn-vicuna/vicuna-7b/", 
+        device,
+        # use_fine_tuned_lora=True,
+        lora_weights="../vicuna-react-lora/vicuna-react"
+    )
 
 @torch.inference_mode()
 def compute_until_stop(model, tokenizer, params, device,
