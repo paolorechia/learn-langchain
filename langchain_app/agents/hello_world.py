@@ -1,6 +1,7 @@
 from langchain.agents import load_tools
 from langchain.agents import initialize_agent
 from langchain.agents import AgentType
+
 # from alpaca_request_llm import AlpacaLLM
 from langchain_app.models.vicuna_request_llm import VicunaLLM
 
@@ -8,13 +9,16 @@ from langchain_app.models.vicuna_request_llm import VicunaLLM
 llm = VicunaLLM()
 
 # Next, let's load some tools to use. Note that the `llm-math` tool uses an LLM, so we need to pass that in.
-tools = load_tools(['python_repl'], llm=llm)
+tools = load_tools(["python_repl"], llm=llm)
 
 # Finally, let's initialize an agent with the tools, the language model, and the type of agent we want to use.
-agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+agent = initialize_agent(
+    tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True
+)
 
 # Now let's test it out!
-agent.run("""
+agent.run(
+    """
 For instance:
 
 Question: Find out how much 2 plus 2 is.
@@ -44,5 +48,5 @@ Final Answer: I have executed the task successfully.
 Now begin for real!
 
 Question: Write a Python script that prints "Hello, world!"
-""")
-
+"""
+)

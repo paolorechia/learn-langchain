@@ -24,16 +24,13 @@ model = LlamaForCausalLM.from_pretrained(
     device_map="auto",
 )
 model = PeftModel.from_pretrained(
-    model,
-    alpaca_path,
-    torch_dtype=torch.float16,
-    device_map={"": 0}
+    model, alpaca_path, torch_dtype=torch.float16, device_map={"": 0}
 )
 
 model.eval()
 
 
-class AlpacaLLM(LLM):        
+class AlpacaLLM(LLM):
     temperature: float = 0.1
     top_p: float = 0.75
     top_k: int = 40j
@@ -43,7 +40,7 @@ class AlpacaLLM(LLM):
     @property
     def _llm_type(self) -> str:
         return "custom"
-    
+
     def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
         inputs = tokenizer(prompt, return_tensors="pt")
         input_ids = inputs["input_ids"].cuda()
@@ -51,7 +48,7 @@ class AlpacaLLM(LLM):
             temperature=self.temperature,
             top_p=self.top_p,
             top_k=self.top_k,
-            num_beams=self.num_beams
+            num_beams=self.num_beams,
         )
         with torch.no_grad():
             generation_output = model.generate(
@@ -64,7 +61,6 @@ class AlpacaLLM(LLM):
         s = generation_output.sequences[0]
         output = tokenizer.decode(s)
         return output
-
 
     @property
     def _identifying_params(self) -> Mapping[str, Any]:
