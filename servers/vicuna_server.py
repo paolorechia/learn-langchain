@@ -10,7 +10,7 @@ print("Using config: ", config)
 model_path = config.model_path
 checkpoint_path = config.checkpoint_path
 
-if config.use_for_4bit:
+if config.use_4bit:
     from servers.quant_loader import load_4_bit
 
     model, tokenizer = load_4_bit(config)

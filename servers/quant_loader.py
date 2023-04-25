@@ -4,6 +4,8 @@ from gptq_for_llama.llama_inference import load_quant
 
 
 def load_4_bit(config):
+    model_path = config.model_path
+    checkpoint_path = config.checkpoint_path
     if not model_path:
         if config.base_model_size == "13b":
             model_path = "vicuna-13B-1.1-GPTQ-4bit-128g"
