@@ -38,6 +38,11 @@ This repository has been reorganized.
 
 Access http://localhost:8000/docs for documentation on API
 
+**If you want to load a different model than the default:**
+
+`export USE_13B_MODEL=true && export USE_4BIT=true && uvicorn servers.vicuna_server:app`
+
+
 ## Agent example:
 
 `python -m langchain_app.agents.test_finetune`
