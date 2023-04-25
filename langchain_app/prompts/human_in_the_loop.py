@@ -1,4 +1,3 @@
-
 template_suffix = """A human is asking you to execute tasks, try your best to fulfill them. We'll go over several examples before trying the real task.
 
 Example 1:

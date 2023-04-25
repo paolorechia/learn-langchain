@@ -15,16 +15,22 @@ params = {
 }
 search = SerpAPIWrapper(params=params)
 # Next, let's load some tools to use. Note that the `llm-math` tool uses an LLM, so we need to pass that in.
-tools = load_tools(['python_repl'], llm=llm)
+tools = load_tools(["python_repl"], llm=llm)
 
-tools.append(Tool(
-    name="Search",
-    func=search.run,
-    description="useful for when you need to ask with search"
-))
+tools.append(
+    Tool(
+        name="Search",
+        func=search.run,
+        description="useful for when you need to ask with search",
+    )
+)
 
 # Finally, let's initialize an agent with the tools, the language model, and the type of agent we want to use.
-agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+agent = initialize_agent(
+    tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True
+)
 
 # Now let's test it out!
-agent.run("""Think of cat jokes and save them to a csv file called 'catjokes.csv'. INDENT the code appropriately.""")
+agent.run(
+    """Think of cat jokes and save them to a csv file called 'catjokes.csv'. INDENT the code appropriately."""
+)

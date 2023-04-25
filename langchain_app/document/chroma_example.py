@@ -12,7 +12,9 @@ with open("the_trial.txt") as f:
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 texts = text_splitter.split_text(book)
 embeddings = VicunaEmbeddings()
-docsearch = Chroma.from_texts(texts, embeddings, metadatas=[{"source": str(i)} for i in range(len(texts))])
+docsearch = Chroma.from_texts(
+    texts, embeddings, metadatas=[{"source": str(i)} for i in range(len(texts))]
+)
 
 while True:
     query = input("Type your search: ")

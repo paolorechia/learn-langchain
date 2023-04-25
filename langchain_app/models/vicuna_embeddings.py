@@ -15,11 +15,10 @@ class VicunaEmbeddings(BaseModel, Embeddings):
             "http://127.0.0.1:8000/embedding",
             json={
                 "prompt": p,
-            }
+            },
         )
         response.raise_for_status()
         return response.json()["response"]
-
 
     def embed_documents(
         self, texts: List[str], chunk_size: Optional[int] = 0
@@ -36,9 +35,7 @@ class VicunaEmbeddings(BaseModel, Embeddings):
         """
         results = []
         for text in texts:
-            response = self.embed_query(
-                text
-            )
+            response = self.embed_query(text)
             results.append(response)
         return results
 

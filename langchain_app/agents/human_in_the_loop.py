@@ -18,19 +18,24 @@ params = {
 }
 search = SerpAPIWrapper(params=params)
 # Next, let's load some tools to use. Note that the `llm-math` tool uses an LLM, so we need to pass that in.
-tools = load_tools(['python_repl', 'multi_line_human'], llm=llm)
+tools = load_tools(["python_repl", "multi_line_human"], llm=llm)
 
-tools.append(Tool(
-    name="Search",
-    func=search.run,
-    description="useful for when you need to ask with search"
-))
+tools.append(
+    Tool(
+        name="Search",
+        func=search.run,
+        description="useful for when you need to ask with search",
+    )
+)
 
 # Finally, let's initialize an agent with the tools, the language model, and the type of agent we want to use.
-agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+agent = initialize_agent(
+    tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True
+)
 
 # Now let's test it out!
-agent.run("""
+agent.run(
+    """
 Oh, wait, before your start your next question, we should go over one more tool that is available. 
 The action Human can be used to ask help to a human.
 
@@ -137,4 +142,5 @@ Question:
 4. Ask the human if the results are good.
 5. Finished!
 
-""")
+"""
+)
