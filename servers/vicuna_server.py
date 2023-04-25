@@ -1,8 +1,7 @@
 """Inference for Vicuna models."""
 from typing import Optional, List
-from load_config import Config
-
-from model_inference import get_embeddings, compute_until_stop
+from servers.load_config import Config
+from servers.model_inference import get_embeddings, compute_until_stop
 
 config = Config()
 
@@ -11,11 +10,11 @@ print("Using config: ", config)
 model_path = config.model_path
 checkpoint_path = config.checkpoint_path
 
-if config.load_for_4bit:
-    from quant_loader import load_4_bit
+if config.use_for_4bit:
+    from servers.quant_loader import load_4_bit
     model, tokenizer = load_4_bit(config)
 else:
-    from hf_loader import load_16_bit
+    from servers.hf_loader import load_16_bit
     model, tokenizer = load_16_bit(config)
         
 

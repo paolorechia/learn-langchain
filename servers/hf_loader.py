@@ -1,5 +1,5 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from load_config import Config
+from servers.load_config import Config
 import torch
 
 
@@ -19,7 +19,7 @@ def load_16_bit(config: Config):
         kwargs["device_map"] = "auto"
 
 
-    model = AutoModelForCausalLM.from_pretrained(config.model_path,
+    model = AutoModelForCausalLM.from_pretrained(model_path,
         low_cpu_mem_usage=True, load_in_8bit=config.use_fine_tuned_lora, **kwargs)
     
     if config.use_fine_tuned_lora:
@@ -34,6 +34,6 @@ def load_16_bit(config: Config):
         )
     if config.device == "cuda":
         model.to(config.device)
-    tokenizer = AutoTokenizer.from_pretrained(config.model_path, use_fast=False)
+    tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
 
     return model, tokenizer
