@@ -1,4 +1,4 @@
-from models.alpaca_llm import AlpacaLLM
+from langchain_app.models.alpaca_llm import AlpacaLLM
 from typing import Union
 from fastapi import FastAPI
 from pydantic import BaseModel
