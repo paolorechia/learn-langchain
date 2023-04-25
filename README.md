@@ -27,8 +27,7 @@ This repository support the following models:
 - Vicuna 7b LoRA fine-tune (8-bits)
 - Vicuna 7b GPQT 4-bit group-size 128
 - Vicuna 13b unquantized, HF format (16-bits)
-
-Support for quantized 13b GPQT 4-bit will follow.
+- Vicuna 13b GPQT 4-bit group-size 128
 
 
 ## Update 21.04
