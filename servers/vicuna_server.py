@@ -12,16 +12,20 @@ checkpoint_path = config.checkpoint_path
 
 if config.use_for_4bit:
     from servers.quant_loader import load_4_bit
+
     model, tokenizer = load_4_bit(config)
 else:
     from servers.hf_loader import load_16_bit
+
     model, tokenizer = load_16_bit(config)
-        
+
 
 from fastapi import FastAPI
 from pydantic import BaseModel
 
 app = FastAPI()
+
+
 class PromptRequest(BaseModel):
     prompt: str
     temperature: float
@@ -39,7 +43,7 @@ def process_prompt(prompt_request: PromptRequest):
         "prompt": prompt_request.prompt,
         "temperature": prompt_request.temperature,
         "max_new_tokens": prompt_request.max_new_tokens,
-        "stop": prompt_request.stop
+        "stop": prompt_request.stop,
     }
     print("Received prompt: ", params["prompt"])
     output = compute_until_stop(model, tokenizer, params, config.device)
@@ -49,9 +53,7 @@ def process_prompt(prompt_request: PromptRequest):
 
 @app.post("/embedding")
 def embeddings(prompt_request: EmbeddingRequest):
-    params = {
-        "prompt": prompt_request.prompt
-    }
+    params = {"prompt": prompt_request.prompt}
     print("Received prompt: ", params["prompt"])
-    output = get_embeddings(model, tokenizer,  params["prompt"])
+    output = get_embeddings(model, tokenizer, params["prompt"])
     return {"response": [float(x) for x in output]}

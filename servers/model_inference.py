@@ -1,5 +1,6 @@
 import torch
 
+
 @torch.inference_mode()
 def compute_until_stop(model, tokenizer, params, device, context_len=2048):
     prompt = params["prompt"]
@@ -27,19 +28,19 @@ def compute_until_stop(model, tokenizer, params, device, context_len=2048):
 
     for i in range(max_new_tokens):
         if i == 0:
-            out = model(
-                torch.as_tensor([input_ids], device=device), use_cache=True)
+            out = model(torch.as_tensor([input_ids], device=device), use_cache=True)
             logits = out.logits
             past_key_values = out.past_key_values
         else:
-            out = model(input_ids=torch.as_tensor([[token]], device=device),
-                        use_cache=True,
-                        past_key_values=past_key_values)
+            out = model(
+                input_ids=torch.as_tensor([[token]], device=device),
+                use_cache=True,
+                past_key_values=past_key_values,
+            )
             logits = out.logits
             past_key_values = out.past_key_values
 
         last_token_logits = logits[0][-1]
-
 
         if temperature < 1e-4:
             token = int(torch.argmax(last_token_logits))
@@ -53,7 +54,6 @@ def compute_until_stop(model, tokenizer, params, device, context_len=2048):
             stopped = True
         else:
             stopped = False
-
 
         output = tokenizer.decode(output_ids, skip_special_tokens=True)
         for stop_str in stop_strings:

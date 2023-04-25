@@ -18,14 +18,20 @@ def load_16_bit(config: Config):
         kwargs = {"torch_dtype": torch.float16}
         kwargs["device_map"] = "auto"
 
+    model = AutoModelForCausalLM.from_pretrained(
+        model_path,
+        low_cpu_mem_usage=True,
+        load_in_8bit=config.use_fine_tuned_lora,
+        **kwargs
+    )
 
-    model = AutoModelForCausalLM.from_pretrained(model_path,
-        low_cpu_mem_usage=True, load_in_8bit=config.use_fine_tuned_lora, **kwargs)
-    
     if config.use_fine_tuned_lora:
         from peft import PeftModel
+
         if not config.lora_weights:
-            raise ValueError("Provide path to lora weights or set 'use_fine_tuned_lora' to False")
+            raise ValueError(
+                "Provide path to lora weights or set 'use_fine_tuned_lora' to False"
+            )
 
         model = PeftModel.from_pretrained(
             model,
