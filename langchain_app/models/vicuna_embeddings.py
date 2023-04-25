@@ -23,7 +23,7 @@ class VicunaEmbeddings(BaseModel, Embeddings):
     def embed_documents(
         self, texts: List[str], chunk_size: Optional[int] = 0
     ) -> List[List[float]]:
-        """Call out to OpenAI's embedding endpoint for embedding search docs.
+        """Call out to Vicuna's server embedding endpoint for embedding search docs.
 
         Args:
             texts: The list of texts to embed.
@@ -40,7 +40,7 @@ class VicunaEmbeddings(BaseModel, Embeddings):
         return results
 
     def embed_query(self, text) -> List[float]:
-        """Call out to OpenAI's embedding endpoint for embedding query text.
+        """Call out to Vicuna's server embedding endpoint for embedding query text.
 
         Args:
             text: The text to embed.
