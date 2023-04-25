@@ -11,13 +11,13 @@ def load_4_bit(config):
             model_path = "vicuna-13B-1.1-GPTQ-4bit-128g"
 
             if not checkpoint_path:
-                checkpoint_path = "vicuna-7B-1.1-GPTQ-4bit-128g.safetensors"
+                checkpoint_path = "vicuna-13B-1.1-GPTQ-4bit-128g.safetensors"
 
         else:
             model_path = "vicuna-7B-1.1-GPTQ-4bit-128g"
 
             if not checkpoint_path:
-                checkpoint_path = "vicuna-13B-1.1-GPTQ-4bit-128g.safetensors"
+                checkpoint_path = "vicuna-7B-1.1-GPTQ-4bit-128g.safetensors"
 
     if not os.path.exists(model_path):
         if config.base_model_size == "7b":
