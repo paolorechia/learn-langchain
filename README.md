@@ -48,9 +48,9 @@ Access http://localhost:8000/docs for documentation on API
 `python -m langchain_app.agents.test_finetune`
 
 ## Medium Articles
-###Introduction
+### Introduction
 https://medium.com/@paolorechia/creating-my-first-ai-agent-with-vicuna-and-langchain-376ed77160e3
-###Q/A with Sentence Transformer + Vicuna
+### Q/A with Sentence Transformer + Vicuna
 https://medium.com/@paolorechia/building-a-question-answer-bot-with-langchain-vicuna-and-sentence-transformers-b7f80428eadc
 
 ## Example run
