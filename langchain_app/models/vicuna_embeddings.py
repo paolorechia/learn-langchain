@@ -5,9 +5,6 @@ import requests
 
 
 class VicunaEmbeddings(BaseModel, Embeddings):
-    embedding_ctx_length: int = 8191
-    chunk_size: int = 1000
-
     def _call(self, prompt: str) -> str:
         p = prompt.strip()
         print("Sending prompt ", p)
