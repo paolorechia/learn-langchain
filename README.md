@@ -56,6 +56,23 @@ uvicorn servers.vicuna_server:app
 export USE_13B_MODEL=true && export USE_4BIT=true && uvicorn servers.vicuna_server:app``export USE_13B_MODEL=true && export USE_4BIT=true && uvicorn servers.vicuna_server:app
 ```
 
+#### On Windows
+
+If you've somehow managed to install everything on Windows (congrats!), please feel free to contribute to extend this README.md. So far we know that you need to follow this change:
+
+```
+Your command to use a different model returns an error if you try and run it on windows:
+
+export USE_13B_MODEL=true && export USE_4BIT=true && uvicorn servers.vicuna_server:app
+
+The export and && isn't supported. I found that you can use the set command and format it like this:
+
+set USE_13B_MODEL=true; set USE_4BIT=true;uvicorn servers.vicuna_server:app
+```
+
+Thanks to @unoriginalscreenname for sharing
+
+#### Downloading quantized models
 When you run it for the first time, the server might throw you an error that the model is not found. You should follow the instruction, for instance, cloning:
 
 ```bash
