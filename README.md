@@ -56,9 +56,11 @@ uvicorn servers.vicuna_server:app
 export USE_13B_MODEL=true && export USE_4BIT=true && uvicorn servers.vicuna_server:app``export USE_13B_MODEL=true && export USE_4BIT=true && uvicorn servers.vicuna_server:app
 ```
 
-When you run it for the first time, the server might throw you an error that the model is not found. You should follow the instruction, for instance, cloning
+When you run it for the first time, the server might throw you an error that the model is not found. You should follow the instruction, for instance, cloning:
 
+```bash
 git clone https://huggingface.co/TheBloke/vicuna-7B-1.1-GPTQ-4bit-128g
+```
 
 Make sure you have installed `git lfs` first. You can also run this command beforehand, if you know the version you want to use.
 
