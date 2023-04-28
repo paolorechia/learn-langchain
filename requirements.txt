@@ -59,3 +59,4 @@ bitsandbytes==0.38.1
 peft==0.2.0
 uvicorn
 chromadb
+gptq-for-llama @ git+https://github.com/paolorechia/GPTQ-for-LLaMa@cadbacf0dcc18f7c56db54561ad53ba0f8db878c
