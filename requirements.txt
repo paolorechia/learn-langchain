@@ -56,5 +56,6 @@ tzdata==2023.3
 xxhash==3.2.0
 yarl==1.9.2
 bitsandbytes==0.38.1
+peft==0.2.0
 uvicorn
 chromadb
