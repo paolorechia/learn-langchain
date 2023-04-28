@@ -53,7 +53,8 @@ uvicorn servers.vicuna_server:app
 **If you want to load a different model than the default:**
 
 ```
-export USE_13B_MODEL=true && export USE_4BIT=true && uvicorn servers.vicuna_server:app``export USE_13B_MODEL=true && export USE_4BIT=true && uvicorn servers.vicuna_server:app
+export USE_13B_MODEL=true && export USE_4BIT=true && uvicorn servers.vicuna_server:app
+
 ```
 
 #### On Windows
