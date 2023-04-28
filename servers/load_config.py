@@ -9,7 +9,7 @@ class Config:
         self.lora_weights = os.getenv("LORA_WEIGHTS")
         self.device = "cpu" if os.getenv("USE_CPU") else "cuda"
         self.model_path = os.getenv("MODEL_PATH")
-        self.checkpoint_path = os.getenv("MODEL_CHECKPOINT")
+        self.model_checkpoint = os.getenv("MODEL_CHECKPOINT")
 
     def __str__(self) -> str:
         return str(self.__dict__)
