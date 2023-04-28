@@ -220,6 +220,20 @@ Final Answer: Germany is a country located in Central Europe, bordered by the Ba
 ```
 
 
+## Experimental: Code Editor Tool
+
+
+### Matplotlib Prompt
+Install `matplotlib` and run:
+
+```bash
+python -m langchain_app.agents.coder_plot_chart
+```
+
+If all works well, the bot will create a `example_chart.png` file and a `persistent_source.py` with the source code generated.
+
+
+
 
 ## Medium Articles
 ### Introduction
