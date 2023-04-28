@@ -113,35 +113,89 @@ This repository support the following models:
 
 ## Examples
 
-### Chuck Norris Prompt (does not work well with the current default model)
+Note: The coding prompts are currently unreliable, and what works with model might not work with another.
 
-Note: This prompt only worked with Vicuna-1.1 7B that I converted myself from LLama weights. I'll try to release the weights, so you can reproduce the results from the medium article.
+### Cat Jokes
+Using this to start server:
 
-But you can test that it least it runs:
-
-```python -m langchain_app.agents.hf_example_agent```
-
-Sample broken run:
 ```bash
-(learn-langchain) paolo@paolo-MS-7D08:~/learn-langchain$ python3 -m langchain_app.agents.hf_example_agent
+export USE_4BIT=true
+export USE_13B_MODEL=true
+uvicorn servers.vicuna_server:app 
+```
+
+You can get this output:
+
+```bash
+(learn-langchain) paolo@paolo-MS-7D08:~/learn-langchain$ python3 -m langchain_app.agents.cat_joke
 
 > Entering new AgentExecutor chain...
-I should use the requests library to fetch the website's HTML
+I must use the Python REPL to write a script that generates cat jokes and saves them to a CSV file called 'catjokes.csv'.
 Action: Python REPL
 Action Input:
-response = requests.get("https://api.chucknorris.io/")
-
-Observation: name 'requests' is not defined
-Thought:I should import the requests library
-Action: Python REPL
-Action Input:
-import requests
+import csv # line 1
+jokes = ["Why did the cat go to the vet?", "Because it was meowt!"] # line 2
+with open("catjokes.csv", "w", newline="") as csvfile: # line 3
+    writer = csv.writer(csvfile) # line 4
+    writer.writerow(jokes) # line 5
 
 Observation: 
-Thought:I should use the requests library to fetch the website's HTML
+Thought:I now know the answer
+Final Answer: I have executed the task successfully.
+
+Final Answer: I have executed the task successfully.
+
+> Finished chain.
+(learn-langchain) paolo@paolo-MS-7D08:~/learn-langchain$ cat catjokes.csv 
+Why did the cat go to the vet?,Because it was meowt!
+```
+
+### Chuck Norris Prompt
+
+Note: The original prompt from the article is not working anymore, as I might have modified something in the process.
+
+The model that seems to perform better at this sort of task is the new WizardLM: https://huggingface.co/TheBloke/wizardLM-7B-HF
+
+Server start. Modify the file 'run_server.sh' with this:
+```
+export MODEL_PATH=TheBloke/wizardLM-7B-HF
+uvicorn servers.vicuna_server:app
+```
+
+```(learn-langchain) paolo@paolo-MS-7D08:~/learn-langchain$ python -m langchain_app.agents.chuck_norris_simple
+> Entering new AgentExecutor chain...
+I should use requests library to fetch the data from the API
 Action: Python REPL
-Action Input:
-response = requests.get("https://api.chucknorris.io/")
+Action Input: 
+import requests
+Observation: 
+Thought:I should define the endpoint URL
+Action: Python REPL
+Action Input: 
+url = 'https://api.chucknorris.io/jokes/random'
+Observation: 
+Thought:I should send a GET request to the endpoint
+Action: Python REPL
+Action Input: 
+response = requests.get(url)
+Observation: 
+Thought:I should check if the response status code is 200
+Action: Python REPL
+Action Input: 
+if response.status_code == 200:
+    # extract the joke from the response
+    data = response.json()
+    joke = data['value']
+    print(joke)
+else:
+    print('Error fetching joke')
+Observation: Chuck Norris once ran a one-minute mile. He did it dragging an 18-wheeler while running in a field of wet cement.
+
+Thought:I have successfully fetched and printed the joke.
+Final Answer: Chuck Norris once ran a one-minute mile. He did it dragging an 18-wheeler while running in a field of wet cement.
+
+> Finished chain.
+(learn-langchain) paolo@paolo-MS-7D08:~/learn-langchain$ 
 ```
 
 ### Answer about Germany Q/A
@@ -164,6 +218,8 @@ Observation: [(Document(page_content="'''Germany''',{{efn|{{lang-de|Deutschland}
 Thought:I now know the final answer
 Final Answer: Germany is a country located in Central Europe, bordered by the Baltic and North seas to the north, the Alps to the south, and bordered by Denmark, Poland, the Czech Republic, Austria, Switzerland, France, Luxembourg, Belgium, and the Netherlands to the west. Its capital and most populous city is Berlin and its main financial center is Frankfurt. The largest urban area is the Ruhr.
 ```
+
+
 
 ## Medium Articles
 ### Introduction

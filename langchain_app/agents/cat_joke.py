@@ -3,7 +3,7 @@ from langchain.agents import initialize_agent, Tool
 from langchain.agents import AgentType
 from langchain.utilities import SerpAPIWrapper
 
-from langchain_app.langchain_app.models.vicuna_request_llm import VicunaLLM
+from langchain_app.models.vicuna_request_llm import VicunaLLM
 
 # First, let's load the language model we're going to use to control the agent.
 llm = VicunaLLM()
