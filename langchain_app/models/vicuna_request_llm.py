@@ -10,13 +10,15 @@ class VicunaLLM(LLM):
         return "custom"
 
     def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
+        if isinstance(stop, list):
+            stop = stop + ["Observation:"]
         response = requests.post(
             "http://127.0.0.1:8000/prompt",
             json={
                 "prompt": prompt,
                 "temperature": 0,
                 "max_new_tokens": 256,
-                "stop": stop + ["Observation:"],
+                "stop": stop,
             },
         )
         response.raise_for_status()
