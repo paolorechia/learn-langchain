@@ -55,5 +55,6 @@ typing-inspect==0.8.0
 tzdata==2023.3
 xxhash==3.2.0
 yarl==1.9.2
+bitsandbytes==0.38.1
 uvicorn
 chromadb

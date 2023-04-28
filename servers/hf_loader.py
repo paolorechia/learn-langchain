@@ -18,6 +18,7 @@ def load_16_bit(config: Config):
         kwargs = {"torch_dtype": torch.float16}
         kwargs["device_map"] = "auto"
 
+    print("Loading model: ", model_path)
     model = AutoModelForCausalLM.from_pretrained(
         model_path,
         low_cpu_mem_usage=True,
