@@ -47,7 +47,7 @@ class CodeEditorTooling:
             # fp.writelines(lines_to_save)
             # filename = fp.name
 
-            fp.writelines(self.source_code)
+            fp.write("\n".join(self.source_code))
             print("Source saved to file: ", filename)
 
         completed_process = subprocess.run(["python3", filename], capture_output=True, timeout=10)
@@ -163,5 +163,18 @@ Thought: In this example, the program failed due to SyntaxError
 
 
 
+""",
+        )
+
+    def build_display_code_tool(self):
+        return Tool(
+            name="CodeEditorDisplayCode",
+            func=self.display_code,
+            description="""Use to display current source code. Example:
+Action: CodeEditorDisplayCode
+Action Input:
+
+Observation:
+print("foo bar")
 """,
         )
