@@ -5,7 +5,7 @@ import torch
 
 def load_16_bit(config: Config):
     if config.model_path:
-        model_path = model_path
+        model_path = config.model_path
     else:
         if config.base_model_size == "7b":
             model_path = "eachadea/vicuna-7b-1.1"

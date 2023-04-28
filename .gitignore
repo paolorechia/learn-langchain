@@ -1,4 +1,6 @@
 **/__pycache__/**
 vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/
 vicuna-*/
+victor123/WizardLM/
 *.txt
+.chroma/index/*
