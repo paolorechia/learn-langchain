@@ -33,3 +33,28 @@ print('world')
 )
     code_editor.add_code(add_input)
     assert code_editor.source_code == ["print('hello')", "print('world')"]
+
+
+def test_code_change_code():
+    code_editor = CodeEditorTooling()
+    code_editor.source_code = ["print('hello')", "print('world')"]
+    edit_code_input = CodeEditorChangeCodeLineInput(input_code="print('code')", line=2)
+    code_editor.change_code_line(edit_code_input)
+    assert code_editor.source_code == ["print('hello')", "print('code')"]
+
+def test_code_delete_lines():
+    code_editor = CodeEditorTooling()
+    code_editor.source_code = ["print('hello')", "print('world')", "x = 2", "y = 3"]
+    delete_code_lines = CodeEditorDeleteCodeLinesInput(lines=[1, 4])
+    code_editor.delete_code_lines(delete_code_lines)
+    assert code_editor.source_code == ["print('world')", "x = 2"]
+
+
+def test_code_display():
+    code_editor = CodeEditorTooling()
+    code_editor.source_code = ["print('hello')", "print('world')"]
+    assert code_editor.display_code() == (
+"""1: print('hello')
+2: print('world')
+"""
+)

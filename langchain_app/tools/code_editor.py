@@ -13,8 +13,7 @@ class CodeEditorChangeCodeLineInput(BaseModel):
     line: int = Field()
 
 class CodeEditorDeleteCodeLinesInput(BaseModel):
-    input_code: str = Field()
-    line: List[int] = Field()
+    lines: List[int] = Field()
 
 
 class CodeEditorTooling:
@@ -26,10 +25,16 @@ class CodeEditorTooling:
         self.source_code.extend(new_lines_of_code)
 
     def change_code_line(self, change_code_line_input: CodeEditorChangeCodeLineInput):
-        pass
+        self.source_code[change_code_line_input.line -1] = change_code_line_input.input_code
 
     def delete_code_lines(self, delete_code_lines_input: CodeEditorDeleteCodeLinesInput):
-        pass
+        lines_to_delete = delete_code_lines_input.lines
+        lines_to_delete.sort()
+        lines_to_delete.reverse()
+
+        for line in lines_to_delete:
+            idx = line -1
+            self.source_code.pop(idx) 
 
     def run_code(self):
         with tempfile.NamedTemporaryFile(buffering=0) as fp:
@@ -44,6 +49,12 @@ class CodeEditorTooling:
             stdout = completed_process.stdout
             stderr = completed_process.stderr
             return f"Program {succeeded}\nStdout:{stdout}\nStderr:{stderr}"
+        
+    def display_code(self):
+        code_string = ""
+        for idx, line in enumerate(self.source_code):
+            code_string += f"{idx + 1}: {line}\n"
+        return code_string
 
     def build_add_code_tool(self):
         return Tool(
