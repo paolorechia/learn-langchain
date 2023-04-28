@@ -11,7 +11,11 @@ class VicunaLLM(LLM):
 
     def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
         if isinstance(stop, list):
-            stop = stop + ["Observation:"]
+            stop = stop + ["Observation:", "Code Result:"]
+        elif stop is None:
+            stop = ["Code Result: "]
+
+        print("Using stop ", stop)
         response = requests.post(
             "http://127.0.0.1:8000/prompt",
             json={
