@@ -38,6 +38,7 @@ git clone https://huggingface.co/TheBloke/vicuna-13B-1.1-GPTQ-4bit-128g
         )
 
     checkpoint = os.path.join(model_path, model_checkpoint)
+    print("Loading model", model_path, " checkpoint", checkpoint)
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
     model = load_quant(model_path, checkpoint, 4, 128)
     model.to(config.device)
