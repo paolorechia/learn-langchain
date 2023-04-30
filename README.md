@@ -44,8 +44,54 @@ For the quantized models, you also need git lfs installed: https://git-lfs.com/
 
 ### Option 1 - Text Generation WebUI (new on 30.04.2023)
 
-This is useful if your setup does not work with my web server for some reason.
-For instance, older GPUs are not compatible with the most recent GPTQ-For-LLama library version. 
+**This is useful when:**
+
+1. This is useful if your setup does not work with my web server for some reason. For instance, older GPUs are not compatible with the most recent GPTQ-For-LLama library version.
+2. You want to have more control over different parameters. You can modify all of these parameters in `langchain_app/models/text_generation_web_ui.py` or by creating your own parameter factory function.
+
+```python
+def default_parameters():
+    return {
+        "max_new_tokens": 250,
+        "do_sample": True,
+        "temperature": 0.001,
+        "top_p": 0.1,
+        "typical_p": 1,
+        "repetition_penalty": 1.2,
+        "top_k": 1,
+        "min_length": 32,
+        "no_repeat_ngram_size": 0,
+        "num_beams": 1,
+        "penalty_alpha": 0,
+        "length_penalty": 1,
+        "early_stopping": False,
+        "seed": -1,
+        "add_bos_token": True,
+        "truncation_length": 2048,
+        "ban_eos_token": False,
+        "skip_special_tokens": True,
+        "stopping_strings": [STOP_TOKEN + ":"],
+    }
+```
+
+If you define your own parameter factory, you should pass them in the LLM builder function:
+
+```python
+def build_text_generation_web_ui_client_llm(
+    prompt_url="http://localhost:5000/api/v1/generate", parameters=None  # override these parameters
+):
+    if parameters is None:
+        parameters = default_parameters()
+
+    return HTTPBaseLLM(
+        prompt_url=prompt_url,
+        parameters=parameters,
+        stop_parameter_name="stopping_strings",
+        response_extractor=response_extractor,
+    )
+```
+
+**Steps to install:**
 
 1. Use https://github.com/oobabooga/text-generation-webui as the backend. 
 2. Install the text-generation-webui as instructed in the repository README,

@@ -1,6 +1,8 @@
 from langchain_app.models.http_llm import HTTPBaseLLM
 
 STOP_TOKEN = "Observation"
+
+
 def default_parameters():
     return {
         "max_new_tokens": 250,

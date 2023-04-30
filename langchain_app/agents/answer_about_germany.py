@@ -1,4 +1,4 @@
-from langchain.embeddings import SentenceTransformerEmbeddings 
+from langchain.embeddings import SentenceTransformerEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
 from langchain_app.models.vicuna_request_llm import VicunaLLM
@@ -9,7 +9,7 @@ print("Creating embeddings...")
 embeddings = SentenceTransformerEmbeddings()
 with open("germany.txt") as f:
     book = f.read()
-    
+
 
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 texts = text_splitter.split_text(book)
@@ -20,6 +20,8 @@ docsearch = Chroma.from_texts(
 
 print("Creating search tool...")
 from pydantic import BaseModel, Field
+
+
 class SearchInEmbeddings(BaseModel):
     query: str = Field()
 
@@ -27,6 +29,7 @@ class SearchInEmbeddings(BaseModel):
 def search(search_input: SearchInEmbeddings):
     docs = docsearch.similarity_search_with_score(search_input, k=1)
     return docs
+
 
 tools = [
     Tool(
@@ -45,6 +48,4 @@ agent = initialize_agent(
 
 while True:
     query = input("Type your question: ")
-    agent.run(
-        input=query
-    )
+    agent.run(input=query)

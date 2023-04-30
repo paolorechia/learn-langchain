@@ -1,4 +1,9 @@
-from langchain.agents import AgentExecutor, LLMSingleActionAgent, Tool, AgentOutputParser
+from langchain.agents import (
+    AgentExecutor,
+    LLMSingleActionAgent,
+    Tool,
+    AgentOutputParser,
+)
 from langchain.prompts import StringPromptTemplate
 from langchain import LLMChain
 from langchain_app.tools.code_editor import CodeEditorTooling
@@ -51,13 +56,14 @@ Source Code: {source_code}
 
 Thought:"""
 
+
 # Set up a prompt template
 class CodeEditorPromptTemplate(StringPromptTemplate):
     # The template to use
     template: str
     code_editor: CodeEditorTooling
     tools: List[Tool]
-    
+
     def format(self, **kwargs) -> str:
         # Get the intermediate steps (AgentAction, Observation tuples)
         # Format them in a particular way
@@ -69,17 +75,20 @@ class CodeEditorPromptTemplate(StringPromptTemplate):
         # Set the agent_scratchpad variable to that value
         kwargs["agent_scratchpad"] = thoughts
         kwargs["source_code"] = code_editor.display_code()
-        kwargs["tools"] = "\n".join([f"{tool.name}: {tool.description}" for tool in self.tools])
+        kwargs["tools"] = "\n".join(
+            [f"{tool.name}: {tool.description}" for tool in self.tools]
+        )
         kwargs["tool_names"] = ", ".join([tool.name for tool in self.tools])
         return self.template.format(**kwargs)
-    
+
 
 prompt = CodeEditorPromptTemplate(
     template=template,
     code_editor=code_editor,
     tools=tools,
-    input_variables=["input", "intermediate_steps"]
+    input_variables=["input", "intermediate_steps"],
 )
+
 
 class CodeEditorOutputParser(AgentOutputParser):
     def parse(self, llm_output: str) -> Union[AgentAction, AgentFinish]:
@@ -100,7 +109,9 @@ class CodeEditorOutputParser(AgentOutputParser):
         action = match.group(1).strip()
         action_input = match.group(2)
         # Return the action and action input
-        return AgentAction(tool=action, tool_input=action_input.strip(" ").strip('"'), log=llm_output)
+        return AgentAction(
+            tool=action, tool_input=action_input.strip(" ").strip('"'), log=llm_output
+        )
 
 
 output_parser = CodeEditorOutputParser()
@@ -110,17 +121,21 @@ llm = VicunaLLM()
 
 tool_names = [tool.name for tool in tools]
 agent = LLMSingleActionAgent(
-    llm_chain=llm_chain, 
+    llm_chain=llm_chain,
     output_parser=output_parser,
-    stop=["\nObservation:"], 
-    allowed_tools=tool_names
+    stop=["\nObservation:"],
+    allowed_tools=tool_names,
 )
 
-agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True)
+agent_executor = AgentExecutor.from_agent_and_tools(
+    agent=agent, tools=tools, verbose=True
+)
 
-agent_executor.run("""
+agent_executor.run(
+    """
 Write a program to print 'hello world'
 Execute the code to test the output
 Conclude whether the output is correct
 Do this step by step
-""")
+"""
+)
