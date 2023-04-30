@@ -16,11 +16,13 @@ class CodeEditorDeleteCodeLinesInput(BaseModel):
 class CodeEditorTooling:
     def __init__(self) -> None:
         self.source_code: List[str] = []
+        self.filename = "persistent_source.py"
 
     def add_code(self, add_code_input: str):
         print("Adding code: ", add_code_input)
         new_lines_of_code =  [line for line in add_code_input.split("\n") if line]
         self.source_code.extend(new_lines_of_code)
+        self.save_code()
 
     def change_code_line(self, change_code_line_input: str):
         s = change_code_line_input.split("\n")
@@ -39,18 +41,20 @@ class CodeEditorTooling:
         # return self.display_code()
 
 
-    def run_code(self, *args, **kwargs):
-        filename = "persistent_source.py"
-        with open(filename, "w") as fp:
+    def save_code(self, *args, **kwargs):
+        with open(self.filename, "w") as fp:
         # with tempfile.NamedTemporaryFile(buffering=0) as fp:
             # lines_to_save = [line.encode("utf-8") for line in self.source_code]
             # fp.writelines(lines_to_save)
             # filename = fp.name
 
             fp.write("\n".join(self.source_code))
-            print("Source saved to file: ", filename)
+            print("Source saved to file: ", self.filename)
 
-        completed_process = subprocess.run(["python3", filename], capture_output=True, timeout=10)
+    def run_code(self, *args, **kwargs):
+        self.save_code()
+
+        completed_process = subprocess.run(["python3", self.filename], capture_output=True, timeout=10)
 
         print(completed_process, completed_process.stderr)
         succeeded = "Succeeded" if completed_process.returncode == 0 else "Failed"

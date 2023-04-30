@@ -22,7 +22,7 @@ class VicunaLLM(LLM):
             json={
                 "prompt": prompt,
                 "temperature": 0,
-                "max_new_tokens": 256,
+                "max_new_tokens": 512,
                 "stop": stop,
             },
         )
