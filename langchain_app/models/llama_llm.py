@@ -2,6 +2,9 @@ from langchain.llms.base import LLM
 from typing import Optional, List, Mapping, Any
 from transformers import LlamaForCausalLM, LlamaTokenizer
 
+from langchain_app.utils.deprecation_warning import emit_module_deprecation_warning
+
+emit_module_deprecation_warning(__name__)
 
 model_path = "../alpaca-lora/llama-7b-hf"
 model = LlamaForCausalLM.from_pretrained(

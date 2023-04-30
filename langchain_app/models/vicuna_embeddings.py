@@ -3,6 +3,10 @@ from pydantic import BaseModel
 from typing import List, Optional
 import requests
 
+from langchain_app.utils.deprecation_warning import emit_module_deprecation_warning
+
+emit_module_deprecation_warning(__name__)
+
 
 class VicunaEmbeddings(BaseModel, Embeddings):
     def _call(self, prompt: str) -> str:

@@ -1,8 +1,10 @@
 from langchain.agents import Tool, initialize_agent, AgentType
 from langchain.tools.python.tool import PythonAstREPLTool
-from langchain_app.models.llama_http_llm import build_llama_base_llm
+from langchain_app.models.text_generation_web_ui import (
+    build_text_generation_web_ui_client_llm,
+)
 
-llm = build_llama_base_llm()
+llm = build_text_generation_web_ui_client_llm()
 python_tool = PythonAstREPLTool()
 
 tools = [

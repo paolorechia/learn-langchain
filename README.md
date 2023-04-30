@@ -41,7 +41,95 @@ For the quantized models, you also need git lfs installed: https://git-lfs.com/
 
 ## Running the server
 
-### Default Parameters
+
+### Option 1 - Text Generation WebUI (new on 30.04.2023)
+
+**This is useful when:**
+
+1. This is useful if your setup does not work with my web server for some reason. For instance, older GPUs are not compatible with the most recent GPTQ-For-LLama library version.
+2. You want to have more control over different parameters. You can modify all of these parameters in `langchain_app/models/text_generation_web_ui.py` or by creating your own parameter factory function.
+
+```python
+def default_parameters():
+    return {
+        "max_new_tokens": 250,
+        "do_sample": True,
+        "temperature": 0.001,
+        "top_p": 0.1,
+        "typical_p": 1,
+        "repetition_penalty": 1.2,
+        "top_k": 1,
+        "min_length": 32,
+        "no_repeat_ngram_size": 0,
+        "num_beams": 1,
+        "penalty_alpha": 0,
+        "length_penalty": 1,
+        "early_stopping": False,
+        "seed": -1,
+        "add_bos_token": True,
+        "truncation_length": 2048,
+        "ban_eos_token": False,
+        "skip_special_tokens": True,
+        "stopping_strings": [STOP_TOKEN + ":"],
+    }
+```
+
+If you define your own parameter factory, you should pass them in the LLM builder function:
+
+```python
+def build_text_generation_web_ui_client_llm(
+    prompt_url="http://localhost:5000/api/v1/generate", parameters=None  # override these parameters
+):
+    if parameters is None:
+        parameters = default_parameters()
+
+    return HTTPBaseLLM(
+        prompt_url=prompt_url,
+        parameters=parameters,
+        stop_parameter_name="stopping_strings",
+        response_extractor=response_extractor,
+    )
+```
+
+**Steps to install:**
+
+1. Use https://github.com/oobabooga/text-generation-webui as the backend. 
+2. Install the text-generation-webui as instructed in the repository README,
+3. Download a model and start the server / UI.
+4. In the UI, go to Interface Mode -> Available Extensions -> api (tick on this one). Click on Apply and restart the interface.
+
+#### Important: small code modification required
+
+Some code samples will not work out of the box with this option. To use the Text Generation WebUI you should use the correct LLM client:
+
+```python
+from langchain_app.models.text_generation_web_ui import build_text_generation_web_ui_client_llm
+
+llm = build_text_generation_web_ui_client_llm()
+```
+
+You can see Chuck Norris example using it here: `langchain_app/agents/chuck_norris_test_web_generation_textui.py`
+
+To execute it and test it:
+
+```bash
+python3 -m langchain_app.agents.chuck_norris_test_web_generation_textui
+```
+
+#### Also important - not all quantized versions supported
+As of today, https://github.com/oobabooga/text-generation-webui uses an older version of the GPTQ-For-LLama. Some newer quantized models available in HuggingFace are not supported.
+
+If you try an unsupported model, you'll see "gibberish output".
+
+This happens for instance with https://huggingface.co/TheBloke/vicuna-13B-1.1-GPTQ-4bit-128g
+
+If you know how to use these models directly with Text Generation WebUI please share your expertise :)
+
+### Option 2 - Use this repo's web server
+Use the web server from this repo. They run on a newer version of GPTQ-For-LLama that supports the safetensor format, and runs faster on newer Triton version. That is usually only worth for Linux / NVIDIA users that have a more recent GPU. I tested it with a RTX-3090.
+
+
+#### Default Parameters
 If you have the virtualenv, start it by running: `source learn-langchain/bin/activate`
 
 Then:
@@ -57,7 +145,7 @@ export USE_13B_MODEL=true && export USE_4BIT=true && uvicorn servers.vicuna_serv
 
 ```
 
-#### On Windows
+##### On Windows
 
 If you've somehow managed to install everything on Windows (congrats!), please feel free to contribute to extend this README.md. So far we know that you need to follow this change:
 
@@ -73,7 +161,7 @@ set USE_13B_MODEL=true; set USE_4BIT=true;uvicorn servers.vicuna_server:app
 
 Thanks to @unoriginalscreenname for sharing
 
-#### Downloading quantized models
+##### Downloading quantized models
 When you run it for the first time, the server might throw you an error that the model is not found. You should follow the instruction, for instance, cloning:
 
 ```bash
@@ -82,7 +170,7 @@ git clone https://huggingface.co/TheBloke/vicuna-7B-1.1-GPTQ-4bit-128g
 
 Make sure you have installed `git lfs` first. You can also run this command beforehand, if you know the version you want to use.
 
-### Config (Update 25.04)
+#### Config (Update 25.04)
 This repository has again been reorganized, adding support for 4 bit models (from gpqt_for_llama: https://github.com/qwopqwop200/GPTQ-for-LLaMa)
 
 You can now change the server behavior by setting environment variables:
@@ -101,7 +189,7 @@ class Config:
 
 Some options are incompatible with each other, the code does not check for all possibilities.
 
-This repository support the following models:
+This repository's web server support the following models:
 
 - Vicuna 7b unquantized, HF format (16-bits) - this is the default (https://huggingface.co/eachadea/vicuna-7b-1.1)
 - Vicuna 7b LoRA fine-tune (8-bits)
