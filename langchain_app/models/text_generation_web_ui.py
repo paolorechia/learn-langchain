@@ -1,9 +1,9 @@
 from http_llm import HTTPBaseLLM
+from langchain_app.models.http_llm import HTTPBaseLLM
 
 
-TextGenerationWebUILLM = HTTPBaseLLM(
-    prompt_url="http://localhost/api/v1/generate",
-    parameters={
+def default_parameters():
+    return {
         "max_new_tokens": 250,
         "do_sample": True,
         "temperature": 1.3,
@@ -23,5 +23,13 @@ TextGenerationWebUILLM = HTTPBaseLLM(
         "ban_eos_token": False,
         "skip_special_tokens": True,
         "stopping_strings": ["Observation:"],
-    },
-)
+    }
+
+
+def build_text_generation_web_ui_client_llm(
+    prompt_url="http://localhost:5000/api/v1/generate", parameters=None
+):
+    if parameters is None:
+        parameters = default_parameters()
+
+    return HTTPBaseLLM(prompt_url=prompt_url, parameters=parameters)
