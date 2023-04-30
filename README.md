@@ -44,6 +44,9 @@ For the quantized models, you also need git lfs installed: https://git-lfs.com/
 
 ### Option 1 - Text Generation WebUI (new on 30.04.2023)
 
+This is useful if your setup does not work with my web server for some reason.
+For instance, older GPUs are not compatible with the most recent GPTQ-For-LLama library version. 
+
 1. Use https://github.com/oobabooga/text-generation-webui as the backend. 
 2. Install the text-generation-webui as instructed in the repository README,
 3. Download a model and start the server / UI.
@@ -77,7 +80,7 @@ This happens for instance with https://huggingface.co/TheBloke/vicuna-13B-1.1-GP
 If you know how to use these models directly with Text Generation WebUI please share your expertise :)
 
 ### Option 2 - Use this repo's web server
-Use the web server from this repo. They run on a newer version of GPTQ-For-LLama that supports the safetensor format.
+Use the web server from this repo. They run on a newer version of GPTQ-For-LLama that supports the safetensor format, and runs faster on newer Triton version. That is usually only worth for Linux / NVIDIA users that have a more recent GPU. I tested it with a RTX-3090.
 
 
 #### Default Parameters
