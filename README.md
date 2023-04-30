@@ -46,8 +46,9 @@ For the quantized models, you also need git lfs installed: https://git-lfs.com/
 
 **This is useful when:**
 
-1. This is useful if your setup does not work with my web server for some reason. For instance, older GPUs are not compatible with the most recent GPTQ-For-LLama library version.
-2. You want to have more control over different parameters. You can modify all of these parameters in `langchain_app/models/text_generation_web_ui.py` or by creating your own parameter factory function.
+1. You don't have a NVIDIA GPU suitable for LLMs.
+2. Your setup does not work with my web server for some reason. For instance, older GPUs are not compatible with the most recent GPTQ-For-LLama library version, while still work fine with oobabooga version.
+3. You want to have more control over different parameters. You can modify all of these parameters in `langchain_app/models/text_generation_web_ui.py` or by creating your own parameter factory function.
 
 ```python
 def default_parameters():
