@@ -1,4 +1,3 @@
-from http_llm import HTTPBaseLLM
 from langchain_app.models.http_llm import HTTPBaseLLM
 
 
@@ -26,10 +25,20 @@ def default_parameters():
     }
 
 
+def response_extractor(json_response):
+    result = json_response["results"][0]["text"]
+    return result
+
+
 def build_text_generation_web_ui_client_llm(
     prompt_url="http://localhost:5000/api/v1/generate", parameters=None
 ):
     if parameters is None:
         parameters = default_parameters()
 
-    return HTTPBaseLLM(prompt_url=prompt_url, parameters=parameters)
+    return HTTPBaseLLM(
+        prompt_url=prompt_url,
+        parameters=parameters,
+        stop_parameter_name="stopping_strings",
+        response_extractor=response_extractor,
+    )
