@@ -3,9 +3,11 @@ from typing import Optional, List, Mapping, Any
 
 import torch
 from peft import PeftModel
-import transformers
 from transformers import LlamaTokenizer, LlamaForCausalLM, GenerationConfig
 
+from langchain_app.utils.deprecation_warning import emit_module_deprecation_warning
+
+emit_module_deprecation_warning(__name__)
 
 model_path = "../alpaca-lora/llama-7b-hf"
 # model_path = "../alpaca-lora/llama-13b-hf"

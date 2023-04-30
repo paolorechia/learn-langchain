@@ -3,6 +3,10 @@ from typing import Optional, List, Mapping, Any
 
 import requests
 
+from langchain_app.utils.deprecation_warning import emit_module_deprecation_warning
+
+emit_module_deprecation_warning(__name__)
+
 
 class VicunaLLM(LLM):
     @property
