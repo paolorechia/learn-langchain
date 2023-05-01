@@ -67,7 +67,7 @@ def sum_numbers(a: int, b: int) -> int:
 def main():
     print(sum_numbers(3, 7)
 
-Thought: I must merge the two code, and only add a new line at the bottom to print the sum
+Thought: I must merge the two code blocks, by only adding a new line at the bottom to print the sum
 Action: CodeEditorAddCode
 Action Input:
     print(sum_numbers(3, 7))
@@ -80,8 +80,41 @@ def main():
 Thought: I have successfully edited the code
 Final Answer: I have finished my task
 
-When taking an action, you'll see the Observation: appended after, with the results of your operation.
-Now try to solve the following. Don't forget to add the Observation at the end.
+
+
+Example 3:
+
+Existing Source Code:
+def create_agent():
+    return "stub"
+
+Subtask: Create an agent inside the 'create_agent' function.
+New Code From The Pair Programmer:
+def create_agent():
+    return Agent()
+
+Thought: I must merge the two code blocks. I need to first delete the repeated code.
+Action: CodeEditorDeleteLines
+Action Input:
+2
+
+Observation: 
+def create_agent():
+
+Thought: I must merge the two code blocks. I can now add the new different line.
+Action: CodeEditorAddCode
+Action Input:
+    return Agent()
+
+Observation:
+def create_agent():
+    return Agent()
+
+Thought: I have successfully edited the code
+Final Answer: I have finished my task
+
+
+Now try to solve the following.
 Once you've seen that you have successfully edited the code, you should add a Thought followed by a Final Answer block.
 You should ALWAYS think what to do next.
 
@@ -171,7 +204,7 @@ class CodeEditorAgent:
         agent = LLMSingleActionAgent(
             llm_chain=llm_chain,
             output_parser=output_parser,
-            stop=["\nObservation:", "Subtask:"],
+            stop=["Observation"],
             allowed_tools=tool_names,
         )
 

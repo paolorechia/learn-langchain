@@ -12,11 +12,11 @@ def default_parameters():
         "typical_p": 1,
         "repetition_penalty": 1.2,
         "top_k": 1,
-        "min_length": 32,
+        "min_length": 0,
         "no_repeat_ngram_size": 0,
         "num_beams": 1,
         "penalty_alpha": 0,
-        "length_penalty": 1,
+        "length_penalty": 1.5,
         "early_stopping": False,
         "seed": -1,
         "add_bos_token": True,
@@ -27,10 +27,10 @@ def default_parameters():
     }
 
 
-def response_extractor(json_response):
+def response_extractor(json_response, stop_parameter_name):
     result = json_response["results"][0]["text"]
-    if STOP_TOKEN in result:
-        return result.split(STOP_TOKEN)[0]
+    if stop_parameter_name in result:
+        return result.split(stop_parameter_name)[0]
     return result
 
 

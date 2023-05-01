@@ -6,7 +6,7 @@ import requests
 from copy import deepcopy
 
 
-def default_extractor(json_response: Dict[str, Any]) -> str:
+def default_extractor(json_response: Dict[str, Any], stop_parameter_name) -> str:
     return json_response["response"]
 
 
@@ -40,7 +40,7 @@ class HTTPBaseLLM(LLM):
             },
         )
         response.raise_for_status()
-        return self.response_extractor(response.json())
+        return self.response_extractor(response.json(), self.stop_parameter_name)
 
     @property
     def _identifying_params(self) -> Mapping[str, Any]:

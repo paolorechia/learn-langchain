@@ -9,14 +9,24 @@ You will be given a task, please helps us thinking it through, step-by-step.
 First, let's see an example of what we expect:
 
 Task: Fetch the contents of the endpoint 'https://example.com/api' and write to a file
-
 Steps:
 1. I should import the requests library
 2. I should use requests library to fetch the results from the endpoint 'https://example.com/api' and save to a variable called response
 3. I should access the variable response and parse the contents by decoding the JSON contents
 4. I should open a local file in write mode and use the json library to dump the results.
 
-End of planning flow.
+END OF PLANNING FLOW
+
+
+Example 2:
+
+Task: Write a random number to a file
+Steps:
+1. I should import the random library.
+2. I should define the output file name.
+3. I open a file and write the random number into it.
+
+END OF PLANNING FLOW
 
 Now let's begin with a real task. Remember you should break it down into tractable implementation chunks, step-by-step, like in the example.
 If you plan to define functions, make sure to name them appropriately.
