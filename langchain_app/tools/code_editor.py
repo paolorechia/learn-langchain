@@ -27,6 +27,12 @@ class CodeEditorTooling:
         self.save_code()
         return self.display_code()
 
+    def overwrite_code(self, new_source: str):
+        new_lines_of_code =  [line for line in new_source.split("\n") if line]
+        self.source_code = new_lines_of_code
+        self.save_code()
+        return self.display_code() 
+
     def add_code(self, add_code_input: str):
         new_lines_of_code =  [line for line in add_code_input.split("\n") if line]
         self.source_code.extend(new_lines_of_code)

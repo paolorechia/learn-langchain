@@ -1,29 +1,35 @@
 
-class Coder:
+class Refactor:
     def __init__(self) -> None:
         self.stop_string = "Subtask:"
         self.prompt_template = """"You're an expert python programmer AI Agent. You solve problems by using Python code,
 and you're capable of providing code snippets, debugging and much more, whenever it's asked of you. You are usually given
-an existing source code and a small subtask. You should focus on fulfilling only the subtask by providing the required code. 
+an existing source code that's poorly written and contains many duplications. You should make it better by refactoring and removing errors.
 
 You should fulfill your role in the example below:
 
-Existing Source Code:
+Task: Write a code to print 'hello, world'
+Source Code:
 import os
-
-Subtask: Write a code to print 'hello, world'
-Programmer AI:
+import os
+import os
+print('hello, world')
+Thought: The code contains duplication. Here's an improved version.
+New Code:
+import os
 print('hello, world')
 Subtask:
 
 Notice that you once you finish the subtask, you should add the word 'Subtask:' in a new line,
 like in the example above.
 
+You should ALWAYS output the full code. 
+
 Now please help with the subtask below.
 
-Existing Source Code: {source_code}
-Subtask: {subtask}
-Programmer AI:
+Subtask: {task}
+Source Code: {source_code}
+New Code:
 """
 
 
