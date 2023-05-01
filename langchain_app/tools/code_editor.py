@@ -17,18 +17,30 @@ class CodeEditorTooling:
     def __init__(self) -> None:
         self.source_code: List[str] = []
         self.filename = "persistent_source.py"
+        self.new_code_candidate = ""
+    
+    def push_new_code_candidate(self, new_code: str):
+        self.new_code_candidate = new_code
+
+    def add_code_to_top(self, add_code_input: str):
+        new_lines_of_code =  [line for line in add_code_input.split("\n") if line]
+        self.source_code = new_lines_of_code + self.source_code
+        self.save_code()
+        return self.display_code()
 
     def add_code(self, add_code_input: str):
-        print("Adding code: ", add_code_input)
         new_lines_of_code =  [line for line in add_code_input.split("\n") if line]
         self.source_code.extend(new_lines_of_code)
         self.save_code()
+        return self.display_code() 
 
     def change_code_line(self, change_code_line_input: str):
         s = change_code_line_input.split("\n")
         line = int(s[0]) - 1
         code = s[1]
         self.source_code[line] = code
+        self.save_code()
+        return self.display_code() 
 
     def delete_code_lines(self, delete_code_lines_input: str):
         lines_to_delete = [int(x) for x in delete_code_lines_input.split(",")]
@@ -38,7 +50,8 @@ class CodeEditorTooling:
         for line in lines_to_delete:
             idx = line -1
             self.source_code.pop(idx)
-        # return self.display_code()
+        self.save_code()
+        return self.display_code() 
 
 
     def save_code(self, *args, **kwargs):
@@ -49,11 +62,8 @@ class CodeEditorTooling:
             # filename = fp.name
 
             fp.write("\n".join(self.source_code))
-            print("Source saved to file: ", self.filename)
 
     def run_code(self, *args, **kwargs):
-        self.save_code()
-
         completed_process = subprocess.run(["python3", self.filename], capture_output=True, timeout=10)
 
         print(completed_process, completed_process.stderr)
@@ -63,7 +73,7 @@ class CodeEditorTooling:
         return f"Program {succeeded}\nStdout:{stdout}\nStderr:{stderr}"
         
     def display_code(self):
-        code_string = ""
+        code_string = "\n"
         for idx, line in enumerate(self.source_code):
             code_string += f"{line}\n"
         return code_string
@@ -89,7 +99,27 @@ Observation: x = 2 + 3
 
 """,
         )
+    
+    def build_add_code_to_top_tool(self):
+        return Tool(
+            name="CodeEditorAddCodeToTop",
+            func=self.add_code_to_top,
+            description="""Use to add new lines of code at the beginning of the file. Example:
 
+Source Code:
+def parse_json(j):
+    return json.load(j)
+
+Action: CodeEditorAddCodeToTop
+Action Input:
+import json
+
+Observation: 
+import json
+def parse_json(j):
+    return json.load(j)
+""",)
+    
     def build_change_code_line_tool(self):
         return Tool(
             name="CodeEditorChangeCodeLine",
