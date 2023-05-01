@@ -40,7 +40,7 @@ class HTTPBaseLLM(LLM):
             },
         )
         response.raise_for_status()
-        return self.response_extractor(response.json(), self.stop_parameter_name)
+        return self.response_extractor(response.json(), params[self.stop_parameter_name])
 
     @property
     def _identifying_params(self) -> Mapping[str, Any]:

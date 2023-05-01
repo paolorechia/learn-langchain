@@ -1,7 +1,5 @@
 from langchain_app.models.http_llm import HTTPBaseLLM
 
-STOP_TOKEN = "Observation"
-
 
 def default_parameters():
     return {
@@ -23,14 +21,18 @@ def default_parameters():
         "truncation_length": 2048,
         "ban_eos_token": False,
         "skip_special_tokens": True,
-        "stopping_strings": [STOP_TOKEN + ":"],
+        "stopping_strings": ["Observation:"],
     }
 
 
-def response_extractor(json_response, stop_parameter_name):
+def response_extractor(json_response, stopping_strings):
     result = json_response["results"][0]["text"]
-    if stop_parameter_name in result:
-        return result.split(stop_parameter_name)[0]
+    for stop_string in stopping_strings:
+        # The stop strings from text-generation-webui come back without the last char
+        ss = stop_string[0:-1]
+        if ss in result:
+            cut_result = result.split(ss)[0]
+            return cut_result
     return result
 
 

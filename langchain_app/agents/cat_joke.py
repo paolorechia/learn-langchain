@@ -3,10 +3,11 @@ from langchain.agents import initialize_agent, Tool
 from langchain.agents import AgentType
 from langchain.utilities import SerpAPIWrapper
 
-from langchain_app.models.vicuna_request_llm import VicunaLLM
+from langchain_app.models.text_generation_web_ui import (
+    build_text_generation_web_ui_client_llm,
+)
 
-# First, let's load the language model we're going to use to control the agent.
-llm = VicunaLLM()
+llm = build_text_generation_web_ui_client_llm()
 
 params = {
     "engine": "google",
