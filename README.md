@@ -342,4 +342,5 @@ https://gist.github.com/paolorechia/0b8b5e08b38040e7ec10eef237caf3a5
 
 * The quantized models are a direct copy of this repository: https://github.com/qwopqwop200/GPTQ-for-LLaMa
 * The inference code is slightly modified version of FastChat: https://github.com/lm-sys/FastChat
+* Thanks to oobagooba's contributors (https://github.com/oobabooga/text-generation-webui) for creating an easy to use backend.
 * All model creators / community that are training and sharing models
