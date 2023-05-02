@@ -204,7 +204,9 @@ This repository's web server support the following models:
 
 ## Examples
 
-Note: The coding prompts are currently unreliable, and what works with model might not work with another.
+Note: The coding prompts are currently unreliable, and what works with one model might not work with another.
+Changing the model parameters also greatly affect the output.
+For instance, increasing repetition penalty to 1.3 seems to improve the quality of the output code, when using the WizardLM model.
 
 ### Cat Jokes
 Using this to start server:
