@@ -23,6 +23,9 @@ class HTTPBaseLLM(LLM):
         return "custom"
 
     def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
+        # Initialize stop_list with the current value or an empty list
+        stop_list = self.parameters.get(self.stop_parameter_name, [])
+
         # Merge passed stop list with class parameters
         if isinstance(stop, list):
             stop_list = list(
