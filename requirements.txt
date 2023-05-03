@@ -60,3 +60,5 @@ peft==0.2.0
 uvicorn
 chromadb
 gptq-for-llama @ git+https://github.com/paolorechia/GPTQ-for-LLaMa@cadbacf0dcc18f7c56db54561ad53ba0f8db878c
+faiss-cpu==1.7.4
+instructorembedding==1.0.0
