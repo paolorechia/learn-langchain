@@ -23,6 +23,7 @@ def load_16_bit(config: Config):
         model_path,
         low_cpu_mem_usage=True,
         load_in_8bit=(config.use_8bit or config.use_fine_tuned_lora),
+        trust_remote_code=True,
         **kwargs
     )
 
