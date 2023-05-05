@@ -9,7 +9,6 @@ print("Using config: ", config)
 
 if config.use_4bit:
     from servers.quant_loader import load_4_bit
-
     model, tokenizer = load_4_bit(config)
 else:
     from servers.hf_loader import load_16_bit

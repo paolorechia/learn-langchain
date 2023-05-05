@@ -5,12 +5,12 @@ STOP_TOKEN = "Observation"
 
 def default_parameters():
     return {
-        "max_new_tokens": 250,
+        "max_new_tokens": 512,
         "do_sample": True,
         "temperature": 0.001,
         "top_p": 0.1,
         "typical_p": 1,
-        "repetition_penalty": 1.2,
+        "repetition_penalty": 1.3,
         "top_k": 1,
         "min_length": 32,
         "no_repeat_ngram_size": 0,
