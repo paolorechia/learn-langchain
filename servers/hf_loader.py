@@ -22,7 +22,8 @@ def load_16_bit(config: Config):
     model = AutoModelForCausalLM.from_pretrained(
         model_path,
         low_cpu_mem_usage=True,
-        load_in_8bit=config.use_fine_tuned_lora,
+        load_in_8bit=(config.use_8bit or config.use_fine_tuned_lora),
+        trust_remote_code=True,
         **kwargs
     )
 
@@ -39,7 +40,7 @@ def load_16_bit(config: Config):
             config.lora_weights,
             torch_dtype=torch.float16,
         )
-    if config.device == "cuda":
+    if config.device == "cuda" and not config.use_8bit:
         model.to(config.device)
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
 
