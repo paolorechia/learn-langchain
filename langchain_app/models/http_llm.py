@@ -35,12 +35,13 @@ class HTTPBaseLLM(LLM):
         params = deepcopy(self.parameters)
         params[self.stop_parameter_name] = stop_list
 
-        response = requests.post(
-            self.prompt_url,
-            json={
+        j = {
                 "prompt": prompt,
                 **params,
-            },
+            }
+        response = requests.post(
+            self.prompt_url,
+            json=j
         )
         response.raise_for_status()
         return self.response_extractor(response.json())
