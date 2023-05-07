@@ -2,6 +2,8 @@
 from typing import Optional, List
 from servers.load_config import Config
 from servers.model_inference import get_embeddings, compute_until_stop
+import os
+import json
 
 config = Config()
 
@@ -27,10 +29,46 @@ class PromptRequest(BaseModel):
     temperature: float
     max_new_tokens: int
     stop: Optional[List[str]] = None
+    logging_session: Optional[str] = None
 
 
 class EmbeddingRequest(BaseModel):
     prompt: str
+
+
+class PromptLogger:
+    _instances = {}
+
+    @staticmethod
+    def get(session):
+        if session not in PromptLogger._instances:
+            PromptLogger._instances[session] = PromptLogger(session)
+        return PromptLogger._instances[session]
+
+    def __init__(self, session) -> None:
+        self.input_step = 0
+        self.output_step = 0
+        self.session = session
+        self._dir = f"logged_prompts/session_{session}/"
+        try:
+            os.makedirs(self._dir)
+        except FileExistsError:
+            pass
+
+    def log(self, input_str, prefix="input"):
+        filename = os.path.join(self._dir, f"{prefix}_{self.input_step}")
+        with open(filename, "w") as fp:
+            if prefix == "input":
+                input_str = input_str.split("Now begin for real!\n")[1]
+            fp.write(input_str)
+
+        if prefix == "input":
+            self.input_step += 1
+        elif prefix == "output":
+            self.output_step += 1
+        else:
+            raise ValueError("Invalid prefix")
+
 
 
 @app.post("/prompt")
@@ -44,6 +82,11 @@ def process_prompt(prompt_request: PromptRequest):
     print("Received prompt: ", params["prompt"])
     output = compute_until_stop(model, tokenizer, params, config.device)
     print("Output: ", output)
+    if prompt_request.logging_session is not None:
+        prompt_logger = PromptLogger.get(prompt_request.logging_session)
+        prompt_logger.log(prompt_request.prompt, prefix="input")
+        prompt_logger.log(output, prefix="output")
+
     return {"response": output}
 
 
