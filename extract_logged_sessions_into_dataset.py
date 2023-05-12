@@ -1,9 +1,16 @@
 import os
 
+dataset_folder = "medium_size_generated_tasks"
+# -1 means no number of max_actions 
+max_actions_per_task = -1
+
 if __name__ == "__main__":
+    try:
+        os.makedirs(dataset_folder)
+    except FileExistsError:
+        pass
     dir_ = "logged_prompts/"
     sessions = os.listdir(dir_)
-    dataset_folder = "easy_task_mini_dataset"
     datapoints = 0
     for session in sessions:
         session_dir =  os.path.join(dir_, session)
@@ -12,6 +19,7 @@ if __name__ == "__main__":
         outputs_step_tuple = [log.split("_") for log in logs_files if "output" in log]
         inputs_step_tuple.sort(key=lambda x: x[1])
         outputs_step_tuple.sort(key=lambda x: x[1])
+        i = 0
         for input_tuple, output_tuple in zip(inputs_step_tuple, outputs_step_tuple):
             input_filename = input_tuple[0]+"_"+input_tuple[1]
             output_filename = output_tuple[0]+"_"+output_tuple[1]
@@ -25,4 +33,7 @@ if __name__ == "__main__":
             with open(datapoint_filename, "w") as fp:
                 fp.write(f"#####PROMPT: {prompt}")            
                 fp.write(f"#####OUTPUT: {output}")       
-            datapoints+=1     
+            datapoints+=1
+            i += 1
+            if i == max_actions_per_task:
+                break     

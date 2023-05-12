@@ -89,11 +89,14 @@ Now begin for real!
 Question: {}
 """
 
-with open("easy_coding_tasks.json", "r") as fp:
+offset = 376
+with open("task_generation/dedup_generated_tasks.json", "r") as fp:
     tasks = json.load(fp)
+    tasks = tasks[offset:]
+
 
 for idx, task in enumerate(tasks):
-    params = {"temperature": 0, "max_new_tokens": 256, "stop": ["Observation:"], "logging_session": f"easy_task_{idx+20}"}
+    params = {"temperature": 0, "max_new_tokens": 2048, "stop": ["Observation:"], "logging_session": f"medium_size_dataset{idx+offset}"}
 
     llm = build_llama_base_llm(parameters=params)
     python_tool = PythonAstREPLTool()
@@ -109,4 +112,7 @@ for idx, task in enumerate(tasks):
         tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True
     )
     first_task = tasks[idx]
-    agent.run(prompt_template.format(first_task))
+    try:
+        agent.run(prompt_template.format(first_task))
+    except Exception:
+        pass
