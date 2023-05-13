@@ -3,7 +3,11 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from servers.model_inference import compute_until_stop
 from typing import Optional, List
 
-checkpoint = "bigcode/starcoder"
+
+# checkpoint = "bigcode/starcoder"  # original mode
+
+checkpoint = "HuggingFaceH4/starchat-alpha"  # instruct model
+
 device = "cuda" # for GPU usage or "cpu" for CPU usage
 
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)
