@@ -330,6 +330,8 @@ If all works well, the bot will create a `example_chart.png` file and a `persist
 https://medium.com/@paolorechia/creating-my-first-ai-agent-with-vicuna-and-langchain-376ed77160e3
 ### Q/A with Sentence Transformer + Vicuna
 https://medium.com/@paolorechia/building-a-question-answer-bot-with-langchain-vicuna-and-sentence-transformers-b7f80428eadc
+### Fine tuning for Python REPL
+https://medium.com/@paolorechia/fine-tuning-my-first-wizardlm-lora-ca75aa35363d
 
 ## Example run
 https://gist.github.com/paolorechia/0b8b5e08b38040e7ec10eef237caf3a5
