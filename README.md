@@ -129,7 +129,9 @@ This happens for instance with https://huggingface.co/TheBloke/vicuna-13B-1.1-GP
 If you know how to use these models directly with Text Generation WebUI please share your expertise :)
 
 ### Option 2 - Use this repo's web server
-Use the web server from this repo. They run on a newer version of GPTQ-For-LLama that supports the safetensor format, and runs faster on newer Triton version. That is usually only worth for Linux / NVIDIA users that have a more recent GPU. I tested it with a RTX-3090.
+Update 13.05.2023: I don't recommend this option at the moment, as it seems there are some open bugs with the quantized version, and I'm not planning to fix them. Please use the text generation ui instead if you want to use quantized models.
+
+This option only makes sense if you want to use my server prompt logging feature to generate datasets. Currently only working with HF models (at most 8 bits quantization).
 
 
 #### Default Parameters
