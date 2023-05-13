@@ -63,3 +63,4 @@ gptq-for-llama @ git+https://github.com/paolorechia/GPTQ-for-LLaMa@cadbacf0dcc18
 faiss-cpu==1.7.4
 instructorembedding==1.0.0
 einops==0.6.1
+code_it @ git+https://github.com/paolorechia/code-it
