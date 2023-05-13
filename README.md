@@ -121,15 +121,6 @@ To execute it and test it:
 python3 -m langchain_app.agents.chuck_norris_test_web_generation_textui
 ```
 
-#### Also important - not all quantized versions supported
-As of today, https://github.com/oobabooga/text-generation-webui uses an older version of the GPTQ-For-LLama. Some newer quantized models available in HuggingFace are not supported.
-
-If you try an unsupported model, you'll see "gibberish output".
-
-This happens for instance with https://huggingface.co/TheBloke/vicuna-13B-1.1-GPTQ-4bit-128g
-
-If you know how to use these models directly with Text Generation WebUI please share your expertise :)
-
 ### Option 2 - Use this repo's web server
 Update 13.05.2023: I don't recommend this option at the moment, as it seems there are some open bugs with the quantized version, and I'm not planning to fix them. Please use the text generation ui instead if you want to use quantized models.
 
