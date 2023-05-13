@@ -26,6 +26,8 @@ def load_16_bit(config: Config):
         trust_remote_code=True,
         **kwargs
     )
+    tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
+
 
     if config.use_fine_tuned_lora:
         from peft import PeftModel
@@ -34,14 +36,16 @@ def load_16_bit(config: Config):
             raise ValueError(
                 "Provide path to lora weights or set 'use_fine_tuned_lora' to False"
             )
-
+        print("Loading LoRA...")
         model = PeftModel.from_pretrained(
             model,
             config.lora_weights,
             torch_dtype=torch.float16,
         )
+        print("LoRA loaded")
+        return model,tokenizer
+
     if config.device == "cuda" and not config.use_8bit:
         model.to(config.device)
-    tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
 
     return model, tokenizer

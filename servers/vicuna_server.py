@@ -3,7 +3,6 @@ from typing import Optional, List
 from servers.load_config import Config
 from servers.model_inference import get_embeddings, compute_until_stop
 import os
-import json
 
 config = Config()
 
