@@ -310,7 +310,20 @@ Final Answer: Germany is a country located in Central Europe, bordered by the Ba
 ```
 
 
-## Experimental: Code Editor Tool
+## Experimental: Code Editor Tool / Code-it task executor
+
+Nothign is guaranteed to work here.
+
+### Code-it task executor
+This is an experimental task executor I've been developing at: https://github.com/paolorechia/code-it
+
+You can try it using this example:
+
+```
+python -m langchain_app.agents.coder_plot_chart_executor_test
+```
+
+I'll explain this better at some point :)
 
 
 ### Matplotlib Prompt
@@ -321,6 +334,7 @@ python -m langchain_app.agents.coder_plot_chart
 ```
 
 If all works well, the bot will create a `example_chart.png` file and a `persistent_source.py` with the source code generated.
+
 
 
 
