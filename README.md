@@ -122,7 +122,9 @@ python3 -m langchain_app.agents.chuck_norris_test_web_generation_textui
 ```
 
 ### Option 2 - Use this repo's web server
-Update 13.05.2023: I don't recommend this option at the moment, as it seems there are some open bugs with the quantized version, and I'm not planning to fix them. Please use the text generation ui instead if you want to use quantized models.
+Update 13.05.2023: I don't recommend this option at the moment, as it seems there are some open bugs with the quantized version, and I'm not planning to fix them anytime soon. Please use the text generation ui instead if you want to use quantized models. Open bugs
+1. https://github.com/paolorechia/learn-langchain/issues/25
+2. 
 
 This option only makes sense if you want to use my server prompt logging feature to generate datasets. Currently only working with HF models (at most 8 bits quantization).
 
