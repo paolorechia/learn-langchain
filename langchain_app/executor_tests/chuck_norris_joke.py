@@ -22,16 +22,11 @@ agent = initialize_agent(
 
 agent.run(
     """
-
 Remember to use the following format:
 Action: <>
 Action Input:
 <>
 
-Question: The endpoint https://api.chucknorris.io/jokes/random returns a joke about Chuck Norries
-
-1. Write a python Program that fetches a joke from this endpoint.
-2. Extract the joke from the response. Access the 'value' in the JSON to extract it.
-3. Prints the joke to the screen.
+Question: Extract a joke from https://api.chucknorris.io/jokes/random - access the key 'value' from the returned JSON.
 """
 )
