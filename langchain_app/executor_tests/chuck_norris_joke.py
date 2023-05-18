@@ -7,8 +7,7 @@ from code_it.task_executor import TaskExecutionConfig
 
 llm = VicunaLLM()
 config = TaskExecutionConfig()
-print(config)
-config.install_dependencies = False
+config.install_dependencies = True
 config.execute_code = True
 code_editor = CodeItTool(build_llama_base_llm, config)
 
